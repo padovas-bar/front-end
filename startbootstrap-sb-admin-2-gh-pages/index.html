@@ -20,6 +20,16 @@
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
 
+    <style>
+    .texto{
+        font-family: 'Nunito','-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue',Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #858796;
+    }
+    </style>
+
 </head>
 
 <body id="page-top">
@@ -385,20 +395,66 @@
                                                 Mesa 1</div>
                                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                                 
-                                            <table>
+                                            <table width="345x" id="mesa1">
                                                 <tr>
-                                                    <th>Produto</th>
-                                                    <th>Preço</th>
+                                                    <th width="160px">Produto</th>
+                                                    <th width="60px">Qtd</th>
+                                                    <th style="padding:0 10px;" width="66px">R$</th>
+                                                    <th>Hora</th>
                                                 </tr>
                                                 <tr>
-                                                    <td><input type="text" size="10"/></td>
-                                                    <td><input type="text" size="3"/></td>
+                                                    <td>
+                                                        <select name="products" id="products" class="custom-select custom-select-sm form-control form-control-sm">
+                                                            <option disabled selected value>selecione</option>
+                                                            <optgroup label="Cerveja">
+                                                                <option value="3.50">Brahma lata</option>
+                                                                <option value="8.00">Brahma garrafa </option>
+                                                                <option value="3.00">Skol lata</option>
+                                                                <option value="4.00">Skol long neck</option>
+                                                                <option value="8.00">Skol garrafa</option>
+                                                            </optgroup>
+                                                            <optgroup label="Drink">
+                                                                <option value="1.50">51</option>
+                                                                <option value="1.50">Velho Barreiro</option>
+                                                                <option value="4.00">Maria Mole</option>
+                                                                <option value="5.00">Kariri</option>
+                                                                <option value="3.50">Ypioca</option>
+                                                            </optgroup>
+                                                        </select>
+                                                    </td>
+                                                    <!--<td><input type="number" class="custom-select-sm" min="1" max="99" /></td> -->
+                                                    <td><select name="qtd" id="qtd" class="custom-select custom-select-sm form-control form-control-sm">
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                        <option value="3">3</option>
+                                                        <option value="4">4</option>
+                                                        <option value="5">5</option>
+                                                        <option value="6">6</option>
+                                                        <option value="7">7</option>
+                                                        <option value="8">8</option>
+                                                        <option value="9">9</option>
+                                                    </select></td>
+                                                    <td><label id="mesa1line1value" class="texto" style="padding:0 10px;">0.00</label></td>
+                                                    <td><label class="texto">20:09</label></td>
                                                 </tr>
                                             </table>
 
-                                            <a href="#" class="btn btn-info btn-circle">
-                                                    <i class="fas fa-plus"></i>
-                                            </a>
+                                            
+
+                                            <table width="345x">
+                                                <tr>
+                                                    <th width="160px">
+
+                                                            <a href="#" class="btn btn-info btn-circle" id="btnMesa1">
+                                                                    <i class="fas fa-plus"></i>
+                                                            </a>
+
+                                                    </th>
+                                                    <th width="60px">Total</th>
+                                                    <th style="padding:0 10px;">150</th>
+                                                    <th></th>
+                                                </tr>
+                                            </table>
 
                                             <br><br>
 
@@ -418,9 +474,9 @@
 
                                             </div>
                                         </div>
-                                        <div class="col-auto" style="align-self: normal;">
-                                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                                        </div>
+                                        <!--<div class="col-auto" style="align-self: normal;">-->
+                                        <!--    <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>-->
+                                        <!--</div>-->
                                     </div>
                                 </div>
                             </div>
@@ -786,6 +842,33 @@
     <!-- Page level custom scripts -->
     <script src="js/demo/chart-area-demo.js"></script>
     <script src="js/demo/chart-pie-demo.js"></script>
+
+
+<script>
+    $(document).ready(function () {
+
+    $("#btnMesa1").click(function(){
+    	//alert("ok")
+
+        var markup = "<tr><td>    <select name='products' id='products' class='custom-select custom-select-sm form-control form-control-sm'>        <option disabled selected value>selecione</option>        <optgroup label='Cerveja'>            <option value='volvo'>Brahma lata</option>            <option value='saab'>Brahma garrafa </option>            <option value='mercedes'>Skol lata</option>            <option value='audi'>Skol long neck</option>            <option value='audi'>Skol garrafa</option>        </optgroup>        <optgroup label='Drink'>            <option value='volvo'>51</option>            <option value='saab'>Velho Barreiro</option>            <option value='mercedes'>Maria Mole</option>            <option value='audi'>Kariri</option>            <option value='audi'>Ypioca</option>        </optgroup>    </select></td><td><input type='number' min='1' max='99' /></td><td><label class='texto'>999.00</label></td><td><label class='texto'>20:09</label></td></tr>";
+
+        $("#mesa1 tbody").append(markup);
+    });
+
+    $("#products,#qtd").change(function(){
+        //get the select html: console.log(this)
+        //get the value attr console.log($( "#products" ).val())
+        //get the description attr console.log($( "#products option:selected" ).text())
+
+        var productValue = $("#products").val()
+        var qtdValue = $("#qtd").val()
+        
+        $('#mesa1line1value').text(productValue * qtdValue);
+    });
+    
+
+});
+</script>
 
 </body>
 
