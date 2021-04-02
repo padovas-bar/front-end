@@ -435,7 +435,7 @@
                                                         <option value="9">9</option>
                                                     </select></td>
                                                     <td><label id="mesa1line1value" class="texto" style="padding:0 10px;">0.00</label></td>
-                                                    <td><label class="texto">20:09</label></td>
+                                                    <td><label id="time" class="texto"></label></td>
                                                 </tr>
                                             </table>
 
@@ -451,7 +451,7 @@
 
                                                     </th>
                                                     <th width="60px">Total</th>
-                                                    <th style="padding:0 10px;">150</th>
+                                                    <th style="padding:0 10px;"><label id="total">0.00</label></th>
                                                     <th></th>
                                                 </tr>
                                             </table>
@@ -847,10 +847,18 @@
 <script>
     $(document).ready(function () {
 
+        var date = new Date();
+        var minutes = ('0'+date.getMinutes()).slice(-2)
+        var hours = ('0'+date.getHours()).slice(-2)
+
+        var time = hours + ":" + minutes
+
+        $('#time').text(time)
+
     $("#btnMesa1").click(function(){
     	//alert("ok")
 
-        var markup = "<tr><td>    <select name='products' id='products' class='custom-select custom-select-sm form-control form-control-sm'>        <option disabled selected value>selecione</option>        <optgroup label='Cerveja'>            <option value='volvo'>Brahma lata</option>            <option value='saab'>Brahma garrafa </option>            <option value='mercedes'>Skol lata</option>            <option value='audi'>Skol long neck</option>            <option value='audi'>Skol garrafa</option>        </optgroup>        <optgroup label='Drink'>            <option value='volvo'>51</option>            <option value='saab'>Velho Barreiro</option>            <option value='mercedes'>Maria Mole</option>            <option value='audi'>Kariri</option>            <option value='audi'>Ypioca</option>        </optgroup>    </select></td><td><input type='number' min='1' max='99' /></td><td><label class='texto'>999.00</label></td><td><label class='texto'>20:09</label></td></tr>";
+        var markup = "<tr>                                                    <td>                                                        <select name='products' id='products' class='custom-select custom-select-sm form-control form-control-sm'>                                                            <option disabled selected value>selecione</option>                                                            <optgroup label='Cerveja'>                                                                <option value='3.50'>Brahma lata</option>                                                                <option value='8.00'>Brahma garrafa </option>                                                                <option value='3.00'>Skol lata</option>                                                                <option value='4.00'>Skol long neck</option>                                                                <option value='8.00'>Skol garrafa</option>                                                            </optgroup>                                                            <optgroup label='Drink'>                                                                <option value='1.50'>51</option>                                                                <option value='1.50'>Velho Barreiro</option>                                                                <option value='4.00'>Maria Mole</option>                                                                <option value='5.00'>Kariri</option>                                                                <option value='3.50'>Ypioca</option>                                                            </optgroup>                                                        </select>                                                    </td>                                                    <!--<td><input type='number' class='custom-select-sm' min='1' max='99' /></td> -->                                                    <td><select name='qtd' id='qtd' class='custom-select custom-select-sm form-control form-control-sm'>                                                        <option value='1'>1</option>                                                        <option value='2'>2</option>                                                        <option value='3'>3</option>                                                        <option value='4'>4</option>                                                        <option value='5'>5</option>                                                        <option value='6'>6</option>                                                        <option value='7'>7</option>                                                        <option value='8'>8</option>                                                        <option value='9'>9</option>                                                    </select></td>                                                    <td><label id='mesa1line1value' class='texto' style='padding:0 10px;'>0.00</label></td>                                                    <td><label id='time' class='texto'></label></td>                                                </tr>";
 
         $("#mesa1 tbody").append(markup);
     });
@@ -864,6 +872,7 @@
         var qtdValue = $("#qtd").val()
         
         $('#mesa1line1value').text(productValue * qtdValue);
+        $('#total').text(productValue * qtdValue);
     });
     
 
