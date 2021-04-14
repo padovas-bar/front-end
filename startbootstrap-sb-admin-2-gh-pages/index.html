@@ -404,7 +404,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <select name="products" id="products" class="custom-select custom-select-sm form-control form-control-sm">
+                                                        <select name="products" id="products1" class="valueModifier custom-select custom-select-sm form-control form-control-sm">
                                                             <option disabled selected value>selecione</option>
                                                             <optgroup label="Cerveja">
                                                                 <option value="3.50">Brahma lata</option>
@@ -423,7 +423,7 @@
                                                         </select>
                                                     </td>
                                                     <!--<td><input type="number" class="custom-select-sm" min="1" max="99" /></td> -->
-                                                    <td><select name="qtd" id="qtd" class="custom-select custom-select-sm form-control form-control-sm">
+                                                    <td><select name="qtd" id="qtd1" class="valueModifier custom-select custom-select-sm form-control form-control-sm">
                                                         <option value="1">1</option>
                                                         <option value="2">2</option>
                                                         <option value="3">3</option>
@@ -441,6 +441,8 @@
 
                                             
 
+                                            
+
                                             <table width="345x">
                                                 <tr>
                                                     <th width="160px">
@@ -451,7 +453,7 @@
 
                                                     </th>
                                                     <th width="60px">Total</th>
-                                                    <th style="padding:0 10px;"><label id="total">0.00</label></th>
+                                                    <th style="padding:0 10px;"><div id="total">0.00</div></th>
                                                     <th></th>
                                                 </tr>
                                             </table>
@@ -606,21 +608,46 @@
     $("#btnMesa1").click(function(){
     	//alert("ok")
 
-        var markup = "<tr>                                                    <td>                                                        <select name='products' id='products' class='custom-select custom-select-sm form-control form-control-sm'>                                                            <option disabled selected value>selecione</option>                                                            <optgroup label='Cerveja'>                                                                <option value='3.50'>Brahma lata</option>                                                                <option value='8.00'>Brahma garrafa </option>                                                                <option value='3.00'>Skol lata</option>                                                                <option value='4.00'>Skol long neck</option>                                                                <option value='8.00'>Skol garrafa</option>                                                            </optgroup>                                                            <optgroup label='Drink'>                                                                <option value='1.50'>51</option>                                                                <option value='1.50'>Velho Barreiro</option>                                                                <option value='4.00'>Maria Mole</option>                                                                <option value='5.00'>Kariri</option>                                                                <option value='3.50'>Ypioca</option>                                                            </optgroup>                                                        </select>                                                    </td>                                                    <!--<td><input type='number' class='custom-select-sm' min='1' max='99' /></td> -->                                                    <td><select name='qtd' id='qtd' class='custom-select custom-select-sm form-control form-control-sm'>                                                        <option value='1'>1</option>                                                        <option value='2'>2</option>                                                        <option value='3'>3</option>                                                        <option value='4'>4</option>                                                        <option value='5'>5</option>                                                        <option value='6'>6</option>                                                        <option value='7'>7</option>                                                        <option value='8'>8</option>                                                        <option value='9'>9</option>                                                    </select></td>                                                    <td><label id='mesa1line1value' class='texto' style='padding:0 10px;'>0.00</label></td>                                                    <td><label id='time' class='texto'></label></td>                                                </tr>";
+        nextRow = $('#mesa1').find('tr').length
+
+        var markup = "<tr>                                                    <td>                                                        <select name='products' id='products" + nextRow + "' class='valueModifier custom-select custom-select-sm form-control form-control-sm'>                                                            <option disabled selected value>selecione</option>                                                            <optgroup label='Cerveja'>                                                                <option value='3.50'>Brahma lata</option>                                                                <option value='8.00'>Brahma garrafa </option>                                                                <option value='3.00'>Skol lata</option>                                                                <option value='4.00'>Skol long neck</option>                                                                <option value='8.00'>Skol garrafa</option>                                                            </optgroup>                                                            <optgroup label='Drink'>                                                                <option value='1.50'>51</option>                                                                <option value='1.50'>Velho Barreiro</option>                                                                <option value='4.00'>Maria Mole</option>                                                                <option value='5.00'>Kariri</option>                                                                <option value='3.50'>Ypioca</option>                                                            </optgroup>                                                        </select>                                                    </td>                                                    <!--<td><input type='number' class='custom-select-sm' min='1' max='99' /></td> -->                                                    <td><select name='qtd' id='qtd" + nextRow + "' class='valueModifier custom-select custom-select-sm form-control form-control-sm'>                                                        <option value='1'>1</option>                                                        <option value='2'>2</option>                                                        <option value='3'>3</option>                                                        <option value='4'>4</option>                                                        <option value='5'>5</option>                                                        <option value='6'>6</option>                                                        <option value='7'>7</option>                                                        <option value='8'>8</option>                                                        <option value='9'>9</option>                                                    </select></td>                                                    <td><label id='mesa1line" + nextRow + "value' class='texto' style='padding:0 10px;'>0.00</label></td>                                                    <td><label id='time' class='texto'></label></td>                                                </tr>";
 
         $("#mesa1 tbody").append(markup);
     });
 
-    $("#products,#qtd").change(function(){
+    //$(".valueModifier").change(function(){
         //get the select html: console.log(this)
         //get the value attr console.log($( "#products" ).val())
         //get the description attr console.log($( "#products option:selected" ).text())
 
-        var productValue = $("#products").val()
-        var qtdValue = $("#qtd").val()
+    //$(".valueModifier").click(function(){
+
+    $("#mesa1").on('click', '.valueModifier', function(){
         
-        $('#mesa1line1value').text(productValue * qtdValue);
-        $('#total').text(productValue * qtdValue);
+        var rows = $('#mesa1').find('tr').length - 1
+        var total = 0.00
+
+        for(i = 1; i <= rows; i++){
+            var productValue = $("#products" + i).val()
+            var qtdValue = $("#qtd" + i).val()
+        
+            $('#mesa1line' + i + 'value').text(productValue * qtdValue);
+            total += productValue * qtdValue
+        }
+
+        $('#total').text(total);
+        
+        //var productValue = $("#products").val()
+        //var qtdValue = $("#qtd").val()
+        
+        //$('#mesa1line1value').text(productValue * qtdValue);
+
+        //var productValue2 = $("#products2").val()
+        //var qtdValue2 = $("#qtd2").val()
+        
+        //$('#mesa1line2value').text(productValue2 * qtdValue2);
+
+        //$('#total').text(productValue * qtdValue + productValue2 * qtdValue2);
     });
 
     $("#addMesa").click(function(){
