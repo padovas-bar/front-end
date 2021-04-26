@@ -499,7 +499,7 @@
           <h4 class="modal-title" id="modal-title-mesa">Modal Header</h4>
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body" id="modal-body">
           <p>Some text in the modal.</p>
         </div>
         <div class="modal-footer">
@@ -636,6 +636,9 @@
             $('#modal-title-mesa').text("Fechar comanda: " + mesaTitle)
 
             $('#fecharMesaModal').attr('mesa', 'mesa' + id)
+
+            addContentOnModal()
+        
         });
 
 
@@ -686,6 +689,14 @@ $(document).on('click', '.valueModifier', function() {
         });
 
 });
+
+    function addContentOnModal(){
+        $('#modal-body').text($('#mesa' + id).html())
+
+        $('#mesa' + id).find("tr").each(function( index ) {
+            console.log(index, this) //continuar daqui adicionando os itens da tabela no modal
+        });
+    }
 
     function fecharMesa(){
         var mesa = "M" + $('#fecharMesaModal').attr('mesa').substring(1)
