@@ -364,38 +364,31 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Tables</h1>
-                    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-                        For more information about DataTables, please visit the <a target="_blank"
-                            href="https://datatables.net">official DataTables documentation</a>.</p>
+                    <h1 class="h3 mb-2 text-gray-800">Categorias</h1>
+                    <p class="mb-4">Gestão de categorias de produtos.</p>
 
 
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Listagem</h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <table class="table table-bordered" id="categoryTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
                                             <th>Nome</th>
-                                            <th>Adicionar</th>
+                                            <th>Ação</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         <tr>
-                                            <th><input type="text" id="inputAdd"></th>
+                                            <th><input type="text" placeholder="Nova categoria..." id="inputAdd"></th>
                                             <th><button id="btnAdd">Adicionar</button></th>
                                         </tr>
                                     </tfoot>
-                                    <tbody>
-                                        <tr>
-                                            <td>cachaca</td>
-                                            <td><button id="btnCategoria1">deletar</button></td>
-                                        </tr>
-                                       
+                                    <tbody>   
                                     </tbody>
                                 </table>
                             </div>
@@ -487,23 +480,26 @@
         },
             dataType: 'json',
             success: function (data) {
-                fillTable(data)
-                console.info(data[0].categoryId);
-                
+                fillTable(data)                
             }
         });
     }
 
     function fillTable(elements){
         for(i = 0; i <= elements.length -1; i++){
-            console.info(elements[i].categoryId)
-            console.info(elements[i].name)
-
-            var newRow = "<tr><td>" + elements[i].name + "</td><td><button categoryId='" + elements[i].categoryId + "' id='btnDelete'>deletar</button></td></tr>"
-
-            $("#dataTable tbody").append(newRow);
+            var newRow = "<tr id='line" + elements[i].categoryId + "'><td>" + elements[i].name + "</td><td><button onclick='deleteCategory(" + elements[i].categoryId + ")' id='btnDelete'>Remover</button></td></tr>"
+            $("#categoryTable tbody").append(newRow);
         }
+    }
 
+    function deleteCategory(id){
+        $.ajax({
+            url: 'http://localhost:8080/category/'+id,
+            type: 'delete',
+            success: function (data) {  
+                $("#line" + id).remove()            
+            }
+        });
     }
     
     function create(name){
@@ -517,7 +513,9 @@
         },
             dataType: 'json',
             success: function (data) {
-                console.info(data);
+                var newRow = "<tr id='line" + data.categoryId + "'><td>" + data.name + "</td><td><button onclick='deleteCategory(" + data.categoryId + ")' id='btnDelete'>Remover</button></td></tr>"
+                $("#categoryTable tbody").append(newRow);
+                
             }
         });
     }
