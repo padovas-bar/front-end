@@ -369,6 +369,7 @@
                         For more information about DataTables, please visit the <a target="_blank"
                             href="https://datatables.net">official DataTables documentation</a>.</p>
 
+
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
@@ -383,10 +384,16 @@
                                             <th>Adicionar</th>
                                         </tr>
                                     </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th><input type="text" id="inputAdd"></th>
+                                            <th><button id="btnAdd">Adicionar</button></th>
+                                        </tr>
+                                    </tfoot>
                                     <tbody>
                                         <tr>
-                                            <td><input type="text" id="inputCategoria1"></td>
-                                            <td><button id="btnCategoria1">Adicionar</button></td>
+                                            <td>cachaca</td>
+                                            <td><button id="btnCategoria1">deletar</button></td>
                                         </tr>
                                        
                                     </tbody>
@@ -463,20 +470,50 @@
 
     $(document).ready(function () {
 
-        $(document).on('click', '#btnCategoria1', function() {
-            save($("#inputCategoria1").val())
+        getAll()
+
+        $(document).on('click', '#btnAdd', function() {
+            create($("#inputAdd").val())
         });
 
     });
+
+    function getAll(){
+        $.ajax({
+            url: 'http://localhost:8080/category',
+            type: 'get',
+            headers: {
+                "Accept": "application/json"
+        },
+            dataType: 'json',
+            success: function (data) {
+                fillTable(data)
+                console.info(data[0].categoryId);
+                
+            }
+        });
+    }
+
+    function fillTable(elements){
+        for(i = 0; i <= elements.length -1; i++){
+            console.info(elements[i].categoryId)
+            console.info(elements[i].name)
+
+            var newRow = "<tr><td>" + elements[i].name + "</td><td><button categoryId='" + elements[i].categoryId + "' id='btnDelete'>deletar</button></td></tr>"
+
+            $("#dataTable tbody").append(newRow);
+        }
+
+    }
     
-    function save(name){
+    function create(name){
         $.ajax({
             url: 'http://localhost:8080/category',
             type: 'post',
             data: JSON.stringify({ name: name}),
             headers: {
                 "Content-Type": "application/json",
-        "Accept": "application/json"
+                "Accept": "application/json"
         },
             dataType: 'json',
             success: function (data) {
