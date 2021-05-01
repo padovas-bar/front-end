@@ -59,15 +59,15 @@
                     Gestão
                 </div>
         
-                <li class="nav-item">
-                    <a class="nav-link" href="categoria.html">
+                <li class="nav-item active">
+                    <a class="nav-link" href="category.html">
                         <i class="fas fa-fw fa-table"></i>
                         <span>Categoria</span></a>
                 </li>
         
         
-                <li class="nav-item active">
-                        <a class="nav-link" href="produto.html">
+                <li class="nav-item">
+                        <a class="nav-link" href="product.html">
                             <i class="fas fa-fw fa-table"></i>
                             <span>Produto</span></a>
                 </li>
@@ -384,8 +384,8 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Produtos</h1>
-                    <p class="mb-4">Gestão de produtos.</p>
+                    <h1 class="h3 mb-2 text-gray-800">Categorias</h1>
+                    <p class="mb-4">Gestão de categorias de produtos.</p>
 
 
                     <!-- DataTales Example -->
@@ -399,18 +399,12 @@
                                     <thead>
                                         <tr>
                                             <th>Nome</th>
-                                            <th>Preço</th>
-                                            <th>Categoria</th>
                                             <th>Ação</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         <tr>
-                                            <th><input type="text" placeholder="Novo produto..." id="inputAdd" class="form-control form-control-sm"></th>
-                                            <th><input type="text" placeholder="0.0" id="inputAdd" class="form-control form-control-sm"></th>
-                                            <th><select name="category" id="category" class="custom-select custom-select-sm form-control form-control-sm">
-                                                    <option disabled selected value>selecione</option>
-                                                </select></th>
+                                            <th><input type="text" placeholder="Nova categoria..." id="inputAdd" class="form-control form-control-sm"></th>
                                             <th><button id="btnAdd">Adicionar</button></th>
                                         </tr>
                                     </tfoot>
@@ -489,7 +483,7 @@
 
     $(document).ready(function () {
 
-        getAllCategory()
+        getAll()
 
         $(document).on('click', '#btnAdd', function() {
             create($("#inputAdd").val())
@@ -497,7 +491,7 @@
 
     });
 
-    function getAllCategory(){
+    function getAll(){
         $.ajax({
             url: 'http://localhost:8080/category',
             type: 'get',
@@ -506,14 +500,15 @@
         },
             dataType: 'json',
             success: function (data) {
-                fillSelect(data)                
+                fillTable(data)                
             }
         });
     }
 
-    function fillSelect(elements){
+    function fillTable(elements){
         for(i = 0; i <= elements.length -1; i++){
-            $("#category").append("<option value=" + elements[i].categoryId + ">" + elements[i].name + "</option>");
+            var newRow = "<tr id='line" + elements[i].categoryId + "'><td>" + elements[i].name + "</td><td><button onclick='deleteCategory(" + elements[i].categoryId + ")' id='btnDelete'>Remover</button></td></tr>"
+            $("#categoryTable tbody").append(newRow);
         }
     }
 

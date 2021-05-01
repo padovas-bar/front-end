@@ -59,15 +59,15 @@
                     Gestão
                 </div>
         
-                <li class="nav-item active">
-                    <a class="nav-link" href="categoria.html">
+                <li class="nav-item">
+                    <a class="nav-link" href="category.html">
                         <i class="fas fa-fw fa-table"></i>
                         <span>Categoria</span></a>
                 </li>
         
         
-                <li class="nav-item">
-                        <a class="nav-link" href="produto.html">
+                <li class="nav-item active">
+                        <a class="nav-link" href="product.html">
                             <i class="fas fa-fw fa-table"></i>
                             <span>Produto</span></a>
                 </li>
@@ -384,8 +384,8 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Categorias</h1>
-                    <p class="mb-4">Gestão de categorias de produtos.</p>
+                    <h1 class="h3 mb-2 text-gray-800">Produtos</h1>
+                    <p class="mb-4">Gestão de produtos.</p>
 
 
                     <!-- DataTales Example -->
@@ -395,16 +395,22 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered" id="categoryTable" width="100%" cellspacing="0">
+                                <table class="table table-bordered" id="productTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
                                             <th>Nome</th>
+                                            <th>Preço</th>
+                                            <th>Categoria</th>
                                             <th>Ação</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         <tr>
-                                            <th><input type="text" placeholder="Nova categoria..." id="inputAdd" class="form-control form-control-sm"></th>
+                                            <th><input type="text" placeholder="Novo produto..." id="inputAddName" class="form-control form-control-sm"></th>
+                                            <th><input type="text" placeholder="0.0" id="inputAddPrice" class="form-control form-control-sm"></th>
+                                            <th><select name="category" id="category" class="custom-select custom-select-sm form-control form-control-sm">
+                                                    <option disabled selected value>selecione</option>
+                                                </select></th>
                                             <th><button id="btnAdd">Adicionar</button></th>
                                         </tr>
                                     </tfoot>
@@ -481,19 +487,29 @@
 
     <script>
 
+    var categories;
+
     $(document).ready(function () {
 
+        getAllCategory()
         getAll()
 
         $(document).on('click', '#btnAdd', function() {
-            create($("#inputAdd").val())
+            var product = new Object();
+            product.name = $("#inputAddName").val()
+            product.price = $("#inputAddPrice").val()
+            product.categoryId = $("#category").val()
+
+            console.log(product)
+
+            create(product)
         });
 
     });
 
     function getAll(){
         $.ajax({
-            url: 'http://localhost:8080/category',
+            url: 'http://localhost:8080/product',
             type: 'get',
             headers: {
                 "Accept": "application/json"
@@ -507,14 +523,35 @@
 
     function fillTable(elements){
         for(i = 0; i <= elements.length -1; i++){
-            var newRow = "<tr id='line" + elements[i].categoryId + "'><td>" + elements[i].name + "</td><td><button onclick='deleteCategory(" + elements[i].categoryId + ")' id='btnDelete'>Remover</button></td></tr>"
-            $("#categoryTable tbody").append(newRow);
+            var newRow = "<tr id='line" + elements[i].productId + "'><td>" + elements[i].name + "</td><td>" + elements[i].price + "</td><td>" + elements[i].categoryId + "</td><td><button id='btnDelete' onclick='deleteProduct(" + elements[i].productId + ")'>Remover</button></td></tr>"
+            $("#productTable tbody").append(newRow);
         }
     }
 
-    function deleteCategory(id){
+    function getAllCategory(){
         $.ajax({
-            url: 'http://localhost:8080/category/'+id,
+            url: 'http://localhost:8080/category',
+            type: 'get',
+            headers: {
+                "Accept": "application/json"
+        },
+            dataType: 'json',
+            success: function (data) {
+                categories = data
+                fillSelect(data)                
+            }
+        });
+    }
+
+    function fillSelect(elements){
+        for(i = 0; i <= elements.length -1; i++){
+            $("#category").append("<option value=" + elements[i].categoryId + ">" + elements[i].name + "</option>");
+        }
+    }
+
+    function deleteProduct(id){
+        $.ajax({
+            url: 'http://localhost:8080/product/'+id,
             type: 'delete',
             success: function (data) {  
                 $("#line" + id).remove()            
@@ -522,23 +559,23 @@
         });
     }
     
-    function create(name){
+    function create(product){
         $.ajax({
-            url: 'http://localhost:8080/category',
+            url: 'http://localhost:8080/product',
             type: 'post',
-            data: JSON.stringify({ name: name}),
+            data: JSON.stringify(product),
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
         },
             dataType: 'json',
             success: function (data) {
-                var newRow = "<tr id='line" + data.categoryId + "'><td>" + data.name + "</td><td><button onclick='deleteCategory(" + data.categoryId + ")' id='btnDelete'>Remover</button></td></tr>"
-                $("#categoryTable tbody").append(newRow);
-                
+                var newRow = "<tr id='line" + data.productId + "'><td>" + data.name + "</td><td>" + data.price + "</td><td>" + data.categoryId + "</td><td><button id='btnDelete' onclick='deleteProduct(" + data.productId + ")'>Remover</button></td></tr>"
+                $("#productTable tbody").append(newRow);
             }
         });
     }
+
     
     </script>
 
