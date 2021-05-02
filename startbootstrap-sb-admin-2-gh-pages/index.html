@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Padovas Bar - Controle de mesa</title>
+    <title>Padovas Bar - Controle de comandas</title>
 
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -55,7 +55,7 @@
                 <li class="nav-item active">
                     <a class="nav-link" href="index.html">
                         <i class="fas fa-fw fa-tachometer-alt"></i>
-                        <span>Controle de mesa</span></a>
+                        <span>Controle de comandas</span></a>
                 </li>
         
                 <!-- Divider -->
@@ -390,25 +390,25 @@
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Controle de mesa</h1>
-                        <a href="#" id="addMesa" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                class="fas fa-download fa-sm text-white-50"></i> Adicionar Mesa</a>
+                        <h1 class="h3 mb-0 text-gray-800">Controle de comandas</h1>
+                        <a href="#" id="addOrder" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                                class="fas fa-download fa-sm text-white-50"></i> Adicionar Comanda</a>
                     </div>
 
                     <!-- Content Row -->
-                    <div id="mesas" class="row">
+                    <div id="orders" class="row">
 
                         <!-- Order 1 example -->
-                        <div id="divMesa1" class="mesa col-xl-3 col-md-6 mb-4">
-                            <div id="bordaMesa1" class="card shadow h-100 py-2">
+                        <div id="divOrder1" class="order col-xl-3 col-md-6 mb-4">
+                            <div id="bordaOrder1" class="card shadow h-100 py-2">
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                <label contenteditable="true" id="mesaTitle1" class="mesaTitle">Nova Mesa</label></div>
+                                                <label contenteditable="true" id="orderTitle1" class="orderTitle">Nova Comanda</label></div>
                                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                                 
-                                            <table width="345x" id="mesa1" class="tblMesa">
+                                            <table width="345x" id="order1" class="tblOrder">
                                                 <tr>
                                                     <th width="160px">Produto</th>
                                                     <th width="60px">Qtd</th>
@@ -417,7 +417,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <select name="products" id="mesa1product1" class="valueModifier custom-select custom-select-sm form-control form-control-sm">
+                                                        <select name="products" id="order1product1" class="valueModifier custom-select custom-select-sm form-control form-control-sm">
                                                             <option disabled selected value>selecione</option>
                                                             <optgroup label="Cerveja">
                                                                 <option value="3.50">Brahma lata</option>
@@ -436,7 +436,7 @@
                                                         </select>
                                                     </td>
                                                     <!--<td><input type="number" class="custom-select-sm" min="1" max="99" /></td> -->
-                                                    <td><select name="qtd" id="mesa1qtd1" class="valueModifier custom-select custom-select-sm form-control form-control-sm">
+                                                    <td><select name="qtd" id="order1qtd1" class="valueModifier custom-select custom-select-sm form-control form-control-sm">
                                                         <option value="1">1</option>
                                                         <option value="2">2</option>
                                                         <option value="3">3</option>
@@ -447,7 +447,7 @@
                                                         <option value="8">8</option>
                                                         <option value="9">9</option>
                                                     </select></td>
-                                                    <td><label id="mesa1line1value" class="texto" style="padding:0 10px;">0</label></td>
+                                                    <td><label id="order1line1value" class="texto" style="padding:0 10px;">0</label></td>
                                                     <td><label id="time1" class="texto"></label></td>
                                                 </tr>
                                             </table>
@@ -460,11 +460,11 @@
                                                 <tr>
                                                     <th width="160px">
 
-                                                            <a href="#" class="btn btn-danger btn-circle" id="btnMinusMesa1">
+                                                            <a href="#" class="btn btn-danger btn-circle" id="btnMinusOrder1">
                                                                     <i class="fas fa-minus"></i>
                                                             </a>
 
-                                                            <a href="#" class="btnPlus btn btn-info btn-circle" id="btnPlusMesa1" nr="1">
+                                                            <a href="#" class="btnPlus btn btn-info btn-circle" id="btnPlusOrder1" nr="1">
                                                                     <i class="fas fa-plus"></i>
                                                             </a>
 
@@ -484,11 +484,11 @@
                                                     <span class="text">Pendurar</span>
                                             </a>
 
-                                            <a href="#" id="fecharMesa1" class="btn btn-success btn-icon-split btn-sm fecharMesa" data-toggle="modal" data-target="#fecharMesaModal">
+                                            <a href="#" id="fecharOrder1" class="btn btn-success btn-icon-split btn-sm fecharOrder" data-toggle="modal" data-target="#fecharOrderModal">
                                                     <span class="icon text-white-50">
                                                         <i class="fas fa-check"></i>
                                                     </span>
-                                                    <span class="text">Fechar mesa</span>
+                                                    <span class="text">Fechar comanda</span>
                                             </a>
 
                                             </div>
@@ -501,20 +501,20 @@
                     
 
   <!-- Modal -->
-  <div class="modal fade" id="fecharMesaModal" role="dialog">
+  <div class="modal fade" id="fecharOrderModal" role="dialog">
     <div class="modal-dialog">
     
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title" id="modal-title-mesa">Modal Header</h4>
+          <h4 class="modal-title" id="modal-title-order">Modal Header</h4>
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
         <div class="modal-body" id="modal-body">
           <p>Some text in the modal.</p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal" style="border-color: #858796;" onclick="fecharMesa()">Confirmar pagamento e encerrar comanda</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" style="border-color: #858796;" onclick="fecharOrder()">Confirmar pagamento e encerrar comanda</button>
         </div>
       </div>
       
@@ -534,7 +534,7 @@
                                     <h6 class="m-0 font-weight-bold text-primary">Controle Financeiro</h6>
                                 </div>
                                 <div class="card-body">
-                                    <h4 class="small font-weight-bold">Mesa de fora <span
+                                    <h4 class="small font-weight-bold">Order de fora <span
                                             class="float-right">R$ 3.50</span></h4>
                                     <div class="progress mb-4">
                                         <div class="progress-bar bg-danger" role="progressbar" style="width: 20%"
@@ -636,38 +636,38 @@
         getAll()
 
         var color = "border-left: .25rem solid #" + randomColor() + " !important"
-        $('#bordaMesa1').attr('style', color)
+        $('#bordaOrder1').attr('style', color)
 
-        $(document).on('click', '.fecharMesa', function() {
-            id = $(this).attr("id").replace("fecharMesa", "")
-            mesaTitle = $('#mesaTitle' + id).text()
-            $('#modal-title-mesa').text("Fechar comanda: " + mesaTitle)
+        $(document).on('click', '.fecharOrder', function() {
+            id = $(this).attr("id").replace("fecharOrder", "")
+            orderTitle = $('#orderTitle' + id).text()
+            $('#modal-title-order').text("Fechar comanda: " + orderTitle)
 
-            $('#fecharMesaModal').attr('mesa', 'mesa' + id)
+            $('#fecharOrderModal').attr('order', 'order' + id)
 
             addContentOnModal()
         
         });
 
 
-        $(".mesaTitle").keypress(function(e){ return e.which != 13; });
+        $(".orderTitle").keypress(function(e){ return e.which != 13; });
 
         
         $('#time1').text(getTime())
 
-        $("#mesas").on('click', '.btnPlus', function(){
-            mesaNr = $(this).attr("nr")
+        $("#orders").on('click', '.btnPlus', function(){
+            orderNr = $(this).attr("nr")
             
-            nextRow = $('#mesa' + mesaNr).find('tr').length
+            nextRow = $('#order' + orderNr).find('tr').length
             
-            var markup = "<tr>                                                    <td>                                                        <select name='products' id='mesa" + mesaNr + "product" + nextRow + "' class='valueModifier custom-select custom-select-sm form-control form-control-sm'>                                                            <option disabled selected value>selecione</option>                                                            <optgroup label='Cerveja'>                                                                <option value='3.50'>Brahma lata</option>                                                                <option value='8.00'>Brahma garrafa </option>                                                                <option value='3.00'>Skol lata</option>                                                                <option value='4.00'>Skol long neck</option>                                                                <option value='8.00'>Skol garrafa</option>                                                            </optgroup>                                                            <optgroup label='Drink'>                                                                <option value='1.50'>51</option>                                                                <option value='1.50'>Velho Barreiro</option>                                                                <option value='4.00'>Maria Mole</option>                                                                <option value='5.00'>Kariri</option>                                                                <option value='3.50'>Ypioca</option>                                                            </optgroup>                                                        </select>                                                    </td>                                                    <!--<td><input type='number' class='custom-select-sm' min='1' max='99' /></td> -->                                                    <td><select name='qtd' id='mesa" + mesaNr + "qtd" + nextRow + "' class='valueModifier custom-select custom-select-sm form-control form-control-sm'>                                                        <option value='1'>1</option>                                                        <option value='2'>2</option>                                                        <option value='3'>3</option>                                                        <option value='4'>4</option>                                                        <option value='5'>5</option>                                                        <option value='6'>6</option>                                                        <option value='7'>7</option>                                                        <option value='8'>8</option>                                                        <option value='9'>9</option>                                                    </select></td>                                                    <td><label id='mesa" + mesaNr + "line" + nextRow + "value' class='texto' style='padding:0 10px;'>0</label></td>                                                    <td><label id='time" + nextRow + "' class='texto'>" + getTime() + "</label></td>                                                </tr>";
+            var markup = "<tr>                                                    <td>                                                        <select name='products' id='order" + orderNr + "product" + nextRow + "' class='valueModifier custom-select custom-select-sm form-control form-control-sm'>                                                            <option disabled selected value>selecione</option>                                                            <optgroup label='Cerveja'>                                                                <option value='3.50'>Brahma lata</option>                                                                <option value='8.00'>Brahma garrafa </option>                                                                <option value='3.00'>Skol lata</option>                                                                <option value='4.00'>Skol long neck</option>                                                                <option value='8.00'>Skol garrafa</option>                                                            </optgroup>                                                            <optgroup label='Drink'>                                                                <option value='1.50'>51</option>                                                                <option value='1.50'>Velho Barreiro</option>                                                                <option value='4.00'>Maria Mole</option>                                                                <option value='5.00'>Kariri</option>                                                                <option value='3.50'>Ypioca</option>                                                            </optgroup>                                                        </select>                                                    </td>                                                    <!--<td><input type='number' class='custom-select-sm' min='1' max='99' /></td> -->                                                    <td><select name='qtd' id='order" + orderNr + "qtd" + nextRow + "' class='valueModifier custom-select custom-select-sm form-control form-control-sm'>                                                        <option value='1'>1</option>                                                        <option value='2'>2</option>                                                        <option value='3'>3</option>                                                        <option value='4'>4</option>                                                        <option value='5'>5</option>                                                        <option value='6'>6</option>                                                        <option value='7'>7</option>                                                        <option value='8'>8</option>                                                        <option value='9'>9</option>                                                    </select></td>                                                    <td><label id='order" + orderNr + "line" + nextRow + "value' class='texto' style='padding:0 10px;'>0</label></td>                                                    <td><label id='time" + nextRow + "' class='texto'>" + getTime() + "</label></td>                                                </tr>";
 
-            $("#mesa" + mesaNr + " tbody").append(markup);
+            $("#order" + orderNr + " tbody").append(markup);
         });
 
-        $("#btnMinusMesa1").click(function(){
+        $("#btnMinusOrder1").click(function(){
             alert("Criar modal pedindo p confirmar esta ação")
-            $('#mesa1').find("tr").last().remove();
+            $('#order1').find("tr").last().remove();
             refreshAllValues()
         });
 
@@ -675,11 +675,11 @@
             refreshAllValues()
         });
 
-        $("#addMesa").click(function(){
-            var newMesaNr = getNewMesaNr()
-            var newDiv = "                        <div id='divMesa" + newMesaNr + "' class='mesa col-xl-3 col-md-6 mb-4'>                            <div id='bordaMesa" + newMesaNr + "' class='card shadow h-100 py-2' style='border-left: .25rem solid #" + randomColor() + " !important'>                                <div class='card-body'>                                    <div class='row no-gutters align-items-center'>                                        <div class='col mr-2'>                                            <div class='text-xs font-weight-bold text-primary text-uppercase mb-1'>                                                <label contenteditable='true' class='mesaTitle' id='mesaTitle" + newMesaNr + "'>Nova Mesa</label></div>                                            <div class='h5 mb-0 font-weight-bold text-gray-800'>                                                                                            <table width='345x' class='tblMesa' id='mesa" + newMesaNr + "'>                                                <tr>                                                    <th width='160px'>Produto</th>                                                    <th width='60px'>Qtd</th>                                                    <th style='padding:0 10px;' width='66px'>R$</th>                                                    <th>Hora</th>                                                </tr>                                                <tr>                                                    <td>                                                        <select name='products' id='mesa" + newMesaNr + "product1' class='valueModifier custom-select custom-select-sm form-control form-control-sm'>                                                            <option disabled selected value>selecione</option>                                                            <optgroup label='Cerveja'>                                                                <option value='3.50'>Brahma lata</option>                                                                <option value='8.00'>Brahma garrafa </option>                                                                <option value='3.00'>Skol lata</option>                                                                <option value='4.00'>Skol long neck</option>                                                                <option value='8.00'>Skol garrafa</option>                                                            </optgroup>                                                            <optgroup label='Drink'>                                                                <option value='1.50'>51</option>                                                                <option value='1.50'>Velho Barreiro</option>                                                                <option value='4.00'>Maria Mole</option>                                                                <option value='5.00'>Kariri</option>                                                                <option value='3.50'>Ypioca</option>                                                            </optgroup>                                                        </select>                                                    </td>                                                    <!--<td><input type='number' class='custom-select-sm' min='1' max='99' /></td> -->                                                    <td><select name='qtd' id='mesa" + newMesaNr + "qtd1' class='valueModifier custom-select custom-select-sm form-control form-control-sm'>                                                        <option value='1'>1</option>                                                        <option value='2'>2</option>                                                        <option value='3'>3</option>                                                        <option value='4'>4</option>                                                        <option value='5'>5</option>                                                        <option value='6'>6</option>                                                        <option value='7'>7</option>                                                        <option value='8'>8</option>                                                        <option value='9'>9</option>                                                    </select></td>                                                    <td><label id='mesa" + newMesaNr + "line1value' class='texto' style='padding:0 10px;'>0</label></td>                                                    <td><label id='time" + newMesaNr + "' class='texto'>" + getTime() + "</label></td>                                                </tr>                                            </table>                                                                                                                                    <table width='345x'>                                                <tr>                                                    <th width='160px'>                                                            <a href='#' class='btn btn-danger btn-circle' id='btnMinusMesa" + newMesaNr + "'>                                                                    <i class='fas fa-minus'></i>                                                            </a>                                                            <a href='#' class='btnPlus btn btn-info btn-circle' nr=" + newMesaNr + " id='btnPlusMesa" + newMesaNr + "'>                                                                    <i class='fas fa-plus'></i>                                                            </a>                                                    </th>                                                    <th width='60px'>Total</th>                                                    <th style='padding:0 10px;'><div id='total" + newMesaNr + "'>0</div></th>                                                    <th></th>                                                </tr>                                            </table>                                            <br><br>                                            <a href='#' id='pendurar" + newMesaNr + "' class='btn btn-warning btn-icon-split btn-sm'>                                                    <span class='icon text-white-50'>                                                        <i class='fas fa-info-circle'></i>                                                    </span>                                                    <span class='text'>Pendurar</span>                                            </a>                                            <a href='#' id='fecharMesa" + newMesaNr + "' class='btn btn-success btn-icon-split btn-sm fecharMesa' data-toggle='modal' data-target='#fecharMesaModal'>                                                    <span class='icon text-white-50'>                                                        <i class='fas fa-check'></i>                                                    </span>                                                    <span class='text'>Fechar mesa</span>                                            </a>                                            </div>                                        </div>                                    </div>                                </div>                            </div>                        </div>"
-            $("#mesas").append(newDiv);
-            $(".mesaTitle").keypress(function(e){ return e.which != 13; });
+        $("#addOrder").click(function(){
+            var newOrderNr = getNewOrderNr()
+            var newDiv = "                        <div id='divOrder" + newOrderNr + "' class='order col-xl-3 col-md-6 mb-4'>                            <div id='bordaOrder" + newOrderNr + "' class='card shadow h-100 py-2' style='border-left: .25rem solid #" + randomColor() + " !important'>                                <div class='card-body'>                                    <div class='row no-gutters align-items-center'>                                        <div class='col mr-2'>                                            <div class='text-xs font-weight-bold text-primary text-uppercase mb-1'>                                                <label contenteditable='true' class='orderTitle' id='orderTitle" + newOrderNr + "'>Nova Order</label></div>                                            <div class='h5 mb-0 font-weight-bold text-gray-800'>                                                                                            <table width='345x' class='tblOrder' id='order" + newOrderNr + "'>                                                <tr>                                                    <th width='160px'>Produto</th>                                                    <th width='60px'>Qtd</th>                                                    <th style='padding:0 10px;' width='66px'>R$</th>                                                    <th>Hora</th>                                                </tr>                                                <tr>                                                    <td>                                                        <select name='products' id='order" + newOrderNr + "product1' class='valueModifier custom-select custom-select-sm form-control form-control-sm'>                                                            <option disabled selected value>selecione</option>                                                            <optgroup label='Cerveja'>                                                                <option value='3.50'>Brahma lata</option>                                                                <option value='8.00'>Brahma garrafa </option>                                                                <option value='3.00'>Skol lata</option>                                                                <option value='4.00'>Skol long neck</option>                                                                <option value='8.00'>Skol garrafa</option>                                                            </optgroup>                                                            <optgroup label='Drink'>                                                                <option value='1.50'>51</option>                                                                <option value='1.50'>Velho Barreiro</option>                                                                <option value='4.00'>Maria Mole</option>                                                                <option value='5.00'>Kariri</option>                                                                <option value='3.50'>Ypioca</option>                                                            </optgroup>                                                        </select>                                                    </td>                                                    <!--<td><input type='number' class='custom-select-sm' min='1' max='99' /></td> -->                                                    <td><select name='qtd' id='order" + newOrderNr + "qtd1' class='valueModifier custom-select custom-select-sm form-control form-control-sm'>                                                        <option value='1'>1</option>                                                        <option value='2'>2</option>                                                        <option value='3'>3</option>                                                        <option value='4'>4</option>                                                        <option value='5'>5</option>                                                        <option value='6'>6</option>                                                        <option value='7'>7</option>                                                        <option value='8'>8</option>                                                        <option value='9'>9</option>                                                    </select></td>                                                    <td><label id='order" + newOrderNr + "line1value' class='texto' style='padding:0 10px;'>0</label></td>                                                    <td><label id='time" + newOrderNr + "' class='texto'>" + getTime() + "</label></td>                                                </tr>                                            </table>                                                                                                                                    <table width='345x'>                                                <tr>                                                    <th width='160px'>                                                            <a href='#' class='btn btn-danger btn-circle' id='btnMinusOrder" + newOrderNr + "'>                                                                    <i class='fas fa-minus'></i>                                                            </a>                                                            <a href='#' class='btnPlus btn btn-info btn-circle' nr=" + newOrderNr + " id='btnPlusOrder" + newOrderNr + "'>                                                                    <i class='fas fa-plus'></i>                                                            </a>                                                    </th>                                                    <th width='60px'>Total</th>                                                    <th style='padding:0 10px;'><div id='total" + newOrderNr + "'>0</div></th>                                                    <th></th>                                                </tr>                                            </table>                                            <br><br>                                            <a href='#' id='pendurar" + newOrderNr + "' class='btn btn-warning btn-icon-split btn-sm'>                                                    <span class='icon text-white-50'>                                                        <i class='fas fa-info-circle'></i>                                                    </span>                                                    <span class='text'>Pendurar</span>                                            </a>                                            <a href='#' id='fecharOrder" + newOrderNr + "' class='btn btn-success btn-icon-split btn-sm fecharOrder' data-toggle='modal' data-target='#fecharOrderModal'>                                                    <span class='icon text-white-50'>                                                        <i class='fas fa-check'></i>                                                    </span>                                                    <span class='text'>Fechar order</span>                                            </a>                                            </div>                                        </div>                                    </div>                                </div>                            </div>                        </div>"
+            $("#orders").append(newDiv);
+            $(".orderTitle").keypress(function(e){ return e.which != 13; });
         
         });
 
@@ -690,16 +690,16 @@
 });
 
     function addContentOnModal(){
-        $('#modal-body').text($('#mesa' + id).html())
+        $('#modal-body').text($('#order' + id).html())
 
-        $('#mesa' + id).find("tr").each(function( index ) {
+        $('#order' + id).find("tr").each(function( index ) {
             console.log(index, this) //continuar daqui adicionando os itens da tabela no modal
         });
     }
 
-    function fecharMesa(){
-        var mesa = "M" + $('#fecharMesaModal').attr('mesa').substring(1)
-        $('#div' + mesa).remove()
+    function fecharOrder(){
+        var order = "M" + $('#fecharOrderModal').attr('order').substring(1)
+        $('#div' + order).remove()
     } 
 
     function getTime(){
@@ -711,21 +711,21 @@
     }
 
     function refreshAllValues(){
-        $( ".mesa" ).each(function( index ) {
-            mesaNr = $( this ).attr("id").replace("divMesa", "")
-            refreshValue(mesaNr)
+        $( ".order" ).each(function( index ) {
+            orderNr = $( this ).attr("id").replace("divOrder", "")
+            refreshValue(orderNr)
         });
     }
 
     function refreshValue(nr){
-        var rows = $('#mesa' + nr).find('tr').length - 1
+        var rows = $('#order' + nr).find('tr').length - 1
         var total = 0
 
         for(i = 1; i <= rows; i++){
-            var productValue = $("#mesa" + nr + "product" + i).val()
-            var qtdValue = $("#mesa" + nr + "qtd" + i).val()
+            var productValue = $("#order" + nr + "product" + i).val()
+            var qtdValue = $("#order" + nr + "qtd" + i).val()
          
-            $('#mesa' + nr + 'line' + i + 'value').text(productValue * qtdValue);
+            $('#order' + nr + 'line' + i + 'value').text(productValue * qtdValue);
             total += productValue * qtdValue
         }
 
@@ -737,13 +737,13 @@
         //return Math.floor(Math.random()*16777215).toString(16)
     }
 
-    function getNewMesaNr(){
-        newNr = $('.mesa').length + 1
+    function getNewOrderNr(){
+        newNr = $('.order').length + 1
 
-        $( ".mesa" ).each(function( index ) {
-            console.log("divMesa" + newNr)
+        $( ".order" ).each(function( index ) {
+            console.log("divOrder" + newNr)
             console.log($( this ).attr("id"))
-            if("divMesa" + newNr == $( this ).attr("id")){
+            if("divOrder" + newNr == $( this ).attr("id")){
                 console.log("caiu")
                 newNr = newNr + Math.random().toString().substring(3)
             } 
@@ -761,17 +761,38 @@
         },
             dataType: 'json',
             success: function (data) {
-                loadOrders(data)                
+                loadOrders(data)
             }
         });
     }
 
     function loadOrders(elements){
         for(i = 0; i <= elements.length -1; i++){
-            var newDiv = "                        <div id='divMesa" + elements[i].orderId + "' class='mesa col-xl-3 col-md-6 mb-4'>                            <div id='bordaMesa" + elements[i].orderId + "' class='card shadow h-100 py-2' style='border-left: .25rem solid #" + randomColor() + " !important'>                                <div class='card-body'>                                    <div class='row no-gutters align-items-center'>                                        <div class='col mr-2'>                                            <div class='text-xs font-weight-bold text-primary text-uppercase mb-1'>                                                <label contenteditable='true' class='mesaTitle' id='mesaTitle" + elements[i].orderId + "'>" + elements[i].name + "</label></div>                                            <div class='h5 mb-0 font-weight-bold text-gray-800'>                                                                                            <table width='345x' class='tblMesa' id='mesa" + elements[i].orderId + "'>                                                <tr>                                                    <th width='160px'>Produto</th>                                                    <th width='60px'>Qtd</th>                                                    <th style='padding:0 10px;' width='66px'>R$</th>                                                    <th>Hora</th>                                                </tr>                                                <tr>                                                    <td>                                                        <select name='products' id='mesa" + elements[i].orderId + "product1' class='valueModifier custom-select custom-select-sm form-control form-control-sm'>                                                            <option disabled selected value>selecione</option>                                                            <optgroup label='Cerveja'>                                                                <option value='3.50'>Brahma lata</option>                                                                <option value='8.00'>Brahma garrafa </option>                                                                <option value='3.00'>Skol lata</option>                                                                <option value='4.00'>Skol long neck</option>                                                                <option value='8.00'>Skol garrafa</option>                                                            </optgroup>                                                            <optgroup label='Drink'>                                                                <option value='1.50'>51</option>                                                                <option value='1.50'>Velho Barreiro</option>                                                                <option value='4.00'>Maria Mole</option>                                                                <option value='5.00'>Kariri</option>                                                                <option value='3.50'>Ypioca</option>                                                            </optgroup>                                                        </select>                                                    </td>                                                    <!--<td><input type='number' class='custom-select-sm' min='1' max='99' /></td> -->                                                    <td><select name='qtd' id='mesa" + elements[i].orderId + "qtd1' class='valueModifier custom-select custom-select-sm form-control form-control-sm'>                                                        <option value='1'>1</option>                                                        <option value='2'>2</option>                                                        <option value='3'>3</option>                                                        <option value='4'>4</option>                                                        <option value='5'>5</option>                                                        <option value='6'>6</option>                                                        <option value='7'>7</option>                                                        <option value='8'>8</option>                                                        <option value='9'>9</option>                                                    </select></td>                                                    <td><label id='mesa" + elements[i].orderId + "line1value' class='texto' style='padding:0 10px;'>0</label></td>                                                    <td><label id='time" + elements[i].orderId + "' class='texto'>" + getTime() + "</label></td>                                                </tr>                                            </table>                                                                                                                                    <table width='345x'>                                                <tr>                                                    <th width='160px'>                                                            <a href='#' class='btn btn-danger btn-circle' id='btnMinusMesa" + elements[i].orderId + "'>                                                                    <i class='fas fa-minus'></i>                                                            </a>                                                            <a href='#' class='btnPlus btn btn-info btn-circle' nr=" + elements[i].orderId + " id='btnPlusMesa" + elements[i].orderId + "'>                                                                    <i class='fas fa-plus'></i>                                                            </a>                                                    </th>                                                    <th width='60px'>Total</th>                                                    <th style='padding:0 10px;'><div id='total" + elements[i].orderId + "'>0</div></th>                                                    <th></th>                                                </tr>                                            </table>                                            <br><br>                                            <a href='#' id='pendurar" + elements[i].orderId + "' class='btn btn-warning btn-icon-split btn-sm'>                                                    <span class='icon text-white-50'>                                                        <i class='fas fa-info-circle'></i>                                                    </span>                                                    <span class='text'>Pendurar</span>                                            </a>                                            <a href='#' id='fecharMesa" + elements[i].orderId + "' class='btn btn-success btn-icon-split btn-sm fecharMesa' data-toggle='modal' data-target='#fecharMesaModal'>                                                    <span class='icon text-white-50'>                                                        <i class='fas fa-check'></i>                                                    </span>                                                    <span class='text'>Fechar mesa</span>                                            </a>                                            </div>                                        </div>                                    </div>                                </div>                            </div>                        </div>"
-            $("#mesas").append(newDiv);
-            $(".mesaTitle").keypress(function(e){ return e.which != 13; });
+            var newDiv = "                        <div id='divOrder" + elements[i].orderId + "' class='order col-xl-3 col-md-6 mb-4'>                            <div id='bordaOrder" + elements[i].orderId + "' class='card shadow h-100 py-2' style='border-left: .25rem solid #" + randomColor() + " !important'>                                <div class='card-body'>                                    <div class='row no-gutters align-items-center'>                                        <div class='col mr-2'>                                            <div class='text-xs font-weight-bold text-primary text-uppercase mb-1'>                                                <label contenteditable='true' class='orderTitle' id='orderTitle" + elements[i].orderId + "'>" + elements[i].name + "</label></div>                                            <div class='h5 mb-0 font-weight-bold text-gray-800'>                                                                                            <table width='345x' class='tblOrder' id='order" + elements[i].orderId + "'>                                                <tr>                                                    <th width='160px'>Produto</th>                                                    <th width='60px'>Qtd</th>                                                    <th style='padding:0 10px;' width='66px'>R$</th>                                                    <th>Hora</th>                                                </tr>                                                <tr>                                                    <td>                                                        <select name='products' id='order" + elements[i].orderId + "product1' class='valueModifier custom-select custom-select-sm form-control form-control-sm'>                                                            <option disabled selected value>selecione</option>                                                            <optgroup label='Cerveja'>                                                                <option value='3.50'>Brahma lata</option>                                                                <option value='8.00'>Brahma garrafa </option>                                                                <option value='3.00'>Skol lata</option>                                                                <option value='4.00'>Skol long neck</option>                                                                <option value='8.00'>Skol garrafa</option>                                                            </optgroup>                                                            <optgroup label='Drink'>                                                                <option value='1.50'>51</option>                                                                <option value='1.50'>Velho Barreiro</option>                                                                <option value='4.00'>Maria Mole</option>                                                                <option value='5.00'>Kariri</option>                                                                <option value='3.50'>Ypioca</option>                                                            </optgroup>                                                        </select>                                                    </td>                                                    <!--<td><input type='number' class='custom-select-sm' min='1' max='99' /></td> -->                                                    <td><select name='qtd' id='order" + elements[i].orderId + "qtd1' class='valueModifier custom-select custom-select-sm form-control form-control-sm'>                                                        <option value='1'>1</option>                                                        <option value='2'>2</option>                                                        <option value='3'>3</option>                                                        <option value='4'>4</option>                                                        <option value='5'>5</option>                                                        <option value='6'>6</option>                                                        <option value='7'>7</option>                                                        <option value='8'>8</option>                                                        <option value='9'>9</option>                                                    </select></td>                                                    <td><label id='order" + elements[i].orderId + "line1value' class='texto' style='padding:0 10px;'>0</label></td>                                                    <td><label id='time" + elements[i].orderId + "' class='texto'>" + getTime() + "</label></td>                                                </tr>                                            </table>                                                                                                                                    <table width='345x'>                                                <tr>                                                    <th width='160px'>                                                            <a href='#' class='btn btn-danger btn-circle' id='btnMinusOrder" + elements[i].orderId + "'>                                                                    <i class='fas fa-minus'></i>                                                            </a>                                                            <a href='#' class='btnPlus btn btn-info btn-circle' nr=" + elements[i].orderId + " id='btnPlusOrder" + elements[i].orderId + "'>                                                                    <i class='fas fa-plus'></i>                                                            </a>                                                    </th>                                                    <th width='60px'>Total</th>                                                    <th style='padding:0 10px;'><div id='total" + elements[i].orderId + "'>0</div></th>                                                    <th></th>                                                </tr>                                            </table>                                            <br><br>                                            <a href='#' id='pendurar" + elements[i].orderId + "' class='btn btn-warning btn-icon-split btn-sm'>                                                    <span class='icon text-white-50'>                                                        <i class='fas fa-info-circle'></i>                                                    </span>                                                    <span class='text'>Pendurar</span>                                            </a>                                            <a href='#' id='fecharOrder" + elements[i].orderId + "' class='btn btn-success btn-icon-split btn-sm fecharOrder' data-toggle='modal' data-target='#fecharOrderModal'>                                                    <span class='icon text-white-50'>                                                        <i class='fas fa-check'></i>                                                    </span>                                                    <span class='text'>Fechar order</span>                                            </a>                                            </div>                                        </div>                                    </div>                                </div>                            </div>                        </div>"
+            $("#orders").append(newDiv);
+            $(".orderTitle").keypress(function(e){ return e.which != 13; });
+
+            for(j = 0; j <= elements[i].orderItems.length -1; j++){
+
+                if(j == 0){
+                    $("#order" + elements[i].orderId).find("tr").last().remove();
+                }
+
+                nextRow = $('#order' + elements[i].orderId).find('tr').length
+                var markup = "<tr>                                                    <td>                                                        <select name='products' id='order" + elements[i].orderId + "product" + nextRow + "' class='valueModifier custom-select custom-select-sm form-control form-control-sm'>                                                            <option disabled selected value>selecione</option>                                                            <optgroup label='Cerveja'>                                                                <option value='3.50'>Brahma lata</option>                                                                <option value='8.00'>Brahma garrafa </option>                                                                <option value='3.00'>Skol lata</option>                                                                <option value='4.00'>Skol long neck</option>                                                                <option value='8.00'>Skol garrafa</option>                                                            </optgroup>                                                            <optgroup label='Drink'>                                                                <option value='1.50'>51</option>                                                                <option value='1.50'>Velho Barreiro</option>                                                                <option value='4.00'>Maria Mole</option>                                                                <option value='5.00'>Kariri</option>                                                                <option value='3.50'>Ypioca</option>                                                            </optgroup>                                                        </select>                                                    </td>                                                    <!--<td><input type='number' class='custom-select-sm' min='1' max='99' /></td> -->                                                    <td><select name='qtd' id='order" + elements[i].orderId + "qtd" + nextRow + "' class='valueModifier custom-select custom-select-sm form-control form-control-sm'>                                                        <option value='1'>1</option>                                                        <option value='2'>2</option>                                                        <option value='3'>3</option>                                                        <option value='4'>4</option>                                                        <option value='5'>5</option>                                                        <option value='6'>6</option>                                                        <option value='7'>7</option>                                                        <option value='8'>8</option>                                                        <option value='9'>9</option>                                                    </select></td>                                                    <td><label id='order" + elements[i].orderId + "line" + nextRow + "value' class='texto' style='padding:0 10px;'>0</label></td>                                                    <td><label id='time" + nextRow + "' class='texto'>" + formatTime(elements[i].orderItems[j].itemOrderedAt) + "</label></td>                                                </tr>";
+                $("#order" + elements[i].orderId).append(markup);
+            
+                $('#order' + elements[i].orderId + 'product' + nextRow + ' option').filter(function() { 
+                    return ($(this).text() == elements[i].orderItems[j].productName); //To select Blue
+                }).prop('selected', true);
+            }
         }
+        refreshAllValues()
+    }
+
+    function formatTime(time){
+        var date = new Date(time)
+        return ('0'+date.getHours()).slice(-2) + ":" + ('0'+date.getMinutes()).slice(-2)
     }
 </script>
 
