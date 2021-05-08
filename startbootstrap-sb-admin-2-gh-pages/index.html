@@ -635,6 +635,8 @@
 
         getAll()
 
+        getAllProducts()
+
         var color = "border-left: .25rem solid #" + randomColor() + " !important"
         $('#bordaOrder1').attr('style', color)
 
@@ -660,7 +662,8 @@
             
             nextRow = $('#order' + orderNr).find('tr').length
             
-            var markup = "<tr>                                                    <td>                                                        <select name='products' id='order" + orderNr + "product" + nextRow + "' class='valueModifier custom-select custom-select-sm form-control form-control-sm'>                                                            <option disabled selected value>selecione</option>                                                            <optgroup label='Cerveja'>                                                                <option value='3.50'>Brahma lata</option>                                                                <option value='8.00'>Brahma garrafa </option>                                                                <option value='3.00'>Skol lata</option>                                                                <option value='4.00'>Skol long neck</option>                                                                <option value='8.00'>Skol garrafa</option>                                                            </optgroup>                                                            <optgroup label='Drink'>                                                                <option value='1.50'>51</option>                                                                <option value='1.50'>Velho Barreiro</option>                                                                <option value='4.00'>Maria Mole</option>                                                                <option value='5.00'>Kariri</option>                                                                <option value='3.50'>Ypioca</option>                                                            </optgroup>                                                        </select>                                                    </td>                                                    <!--<td><input type='number' class='custom-select-sm' min='1' max='99' /></td> -->                                                    <td><select name='qtd' id='order" + orderNr + "qtd" + nextRow + "' class='valueModifier custom-select custom-select-sm form-control form-control-sm'>                                                        <option value='1'>1</option>                                                        <option value='2'>2</option>                                                        <option value='3'>3</option>                                                        <option value='4'>4</option>                                                        <option value='5'>5</option>                                                        <option value='6'>6</option>                                                        <option value='7'>7</option>                                                        <option value='8'>8</option>                                                        <option value='9'>9</option>                                                    </select></td>                                                    <td><label id='order" + orderNr + "line" + nextRow + "value' class='texto' style='padding:0 10px;'>0</label></td>                                                    <td><label id='time" + nextRow + "' class='texto'>" + getTime() + "</label></td>                                                </tr>";
+            //var markup = "<tr>                                                    <td>                                                        <select name='products' id='order" + orderNr + "product" + nextRow + "' class='valueModifier custom-select custom-select-sm form-control form-control-sm'>                                                            <option disabled selected value>selecione</option>                                                            <optgroup label='Cerveja'>                                                                <option value='3.50'>Brahma lata</option>                                                                <option value='8.00'>Brahma garrafa </option>                                                                <option value='3.00'>Skol lata</option>                                                                <option value='4.00'>Skol long neck</option>                                                                <option value='8.00'>Skol garrafa</option>                                                            </optgroup>                                                            <optgroup label='Drink'>                                                                <option value='1.50'>51</option>                                                                <option value='1.50'>Velho Barreiro</option>                                                                <option value='4.00'>Maria Mole</option>                                                                <option value='5.00'>Kariri</option>                                                                <option value='3.50'>Ypioca</option>                                                            </optgroup>                                                        </select>                                                    </td>                                                    <!--<td><input type='number' class='custom-select-sm' min='1' max='99' /></td> -->                                                    <td><select name='qtd' id='order" + orderNr + "qtd" + nextRow + "' class='valueModifier custom-select custom-select-sm form-control form-control-sm'>                                                        <option value='1'>1</option>                                                        <option value='2'>2</option>                                                        <option value='3'>3</option>                                                        <option value='4'>4</option>                                                        <option value='5'>5</option>                                                        <option value='6'>6</option>                                                        <option value='7'>7</option>                                                        <option value='8'>8</option>                                                        <option value='9'>9</option>                                                    </select></td>                                                    <td><label id='order" + orderNr + "line" + nextRow + "value' class='texto' style='padding:0 10px;'>0</label></td>                                                    <td><label id='time" + nextRow + "' class='texto'>" + getTime() + "</label></td>                                                </tr>";
+            var markup = "<tr>                                                    <td>                                                        <select name='products' id='order" + orderNr + "product" + nextRow + "' class='valueModifier custom-select custom-select-sm form-control form-control-sm'>                                                            <option disabled selected value>selecione</option>" + productsOptions + "</select>                                                    </td>                                                    <!--<td><input type='number' class='custom-select-sm' min='1' max='99' /></td> -->                                                    <td><select name='qtd' id='order" + orderNr + "qtd" + nextRow + "' class='valueModifier custom-select custom-select-sm form-control form-control-sm'>                                                        <option value='1'>1</option>                                                        <option value='2'>2</option>                                                        <option value='3'>3</option>                                                        <option value='4'>4</option>                                                        <option value='5'>5</option>                                                        <option value='6'>6</option>                                                        <option value='7'>7</option>                                                        <option value='8'>8</option>                                                        <option value='9'>9</option>                                                    </select></td>                                                    <td><label id='order" + orderNr + "line" + nextRow + "value' class='texto' style='padding:0 10px;'>0</label></td>                                                    <td><label id='time" + nextRow + "' class='texto'>" + getTime() + "</label></td>                                                </tr>";
 
             $("#order" + orderNr + " tbody").append(markup);
         });
@@ -673,7 +676,7 @@
 
         $(document).on('click', '.valueModifier', function() {
             console.log($(this).attr('id'))
-            console.log($("option:selected", this).text())
+            console.log($("option:selected", this).text()) //.attr('id') fazer quando carregar os produtos, colocar o id nos options
             refreshAllValues()
         });
 
@@ -733,6 +736,36 @@
     function randomColor(){
         return '4e73df'
         //return Math.floor(Math.random()*16777215).toString(16)
+    }
+
+    function getAllProducts(){
+        $.ajax({
+            url: 'http://localhost:8080/category',
+            type: 'get',
+            headers: {
+                "Accept": "application/json"
+        },
+            dataType: 'json',
+            success: function (data) {
+                productsBuilder(data)
+            }
+        });
+    }
+
+    var productsOptions = "";
+
+    function productsBuilder(categories){
+        for(i = 0; i <= categories.length -1; i++){
+            productsOptions += '<optgroup label="' + categories[i].name + '">'
+            for(j = 0; j <= categories[i].products.length -1; j++){
+                productsOptions += '<option value="' + categories[i].products[j].price + '">' + categories[i].products[j].name + '</option>'
+            }
+
+            productsOptions += '</optgroup>'
+        }
+
+
+
     }
 
     function getAll(){
