@@ -678,11 +678,21 @@
         });
 
         $(document).on('change', '.orderItemProduct', function() {
-            console.log("change")
+            console.log("change Product")
             var orderItemId = $(this).attr('orderItemId')
             var productId = $("option:selected", this).attr('productId')
 
-            updateOrderItemProduct(orderItemId, productId)
+            updateOrderItem(orderItemId, 'productId', productId)
+        });
+
+        $(document).on('change', '.orderItemQtd', function() {
+            console.log("change Qtd")
+            var orderItemId = $(this).attr('orderItemId')
+            var quantity = $("option:selected", this).val()
+
+            console.log(quantity)
+
+            updateOrderItem(orderItemId, 'quantity', quantity)
         });
 
         $("#addOrder").click(function(){
@@ -743,11 +753,14 @@
         //return Math.floor(Math.random()*16777215).toString(16)
     }
 
-    function updateOrderItemProduct(orderItemId, productId){
+    function updateOrderItem(orderItemId, variable, value){
+        var object = {}
+        object[variable] = value
+
         $.ajax({
             url: 'http://localhost:8080/order/item/' + orderItemId,
             type: 'patch',
-            data: JSON.stringify({ 'productId': productId}),
+            data: JSON.stringify(object),
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
@@ -815,12 +828,16 @@
                 }
 
                 nextRow = $('#order' + elements[i].orderId).find('tr').length
-                var markup = "<tr>                                                    <td>                                                        <select name='products' id='order" + elements[i].orderId + "product" + nextRow + "' orderItemId=" + elements[i].orderItems[j].orderItemId + " class='valueModifier orderItemProduct custom-select custom-select-sm form-control form-control-sm'>                                                            <option disabled selected value>selecione</option>" + productsOptions + "</select>                                                    </td>                                                    <td><select name='qtd' id='order" + elements[i].orderId + "qtd" + nextRow + "' class='valueModifier orderItemQtd custom-select custom-select-sm form-control form-control-sm'>" + qtdOptions + "</select></td>                                                    <td><label id='order" + elements[i].orderId + "line" + nextRow + "value' class='texto' style='padding:0 10px;'>0</label></td>                                                    <td><label id='time" + nextRow + "' class='texto'>" + formatTime(elements[i].orderItems[j].itemOrderedAt) + "</label></td>                                                </tr>";
+                var markup = "<tr>                                                    <td>                                                        <select name='products' id='order" + elements[i].orderId + "product" + nextRow + "' orderItemId=" + elements[i].orderItems[j].orderItemId + " class='valueModifier orderItemProduct custom-select custom-select-sm form-control form-control-sm'>                                                            <option disabled selected value>selecione</option>" + productsOptions + "</select>                                                    </td>                                                    <td><select name='qtd' id='order" + elements[i].orderId + "qtd" + nextRow + "' orderItemId=" + elements[i].orderItems[j].orderItemId + " class='valueModifier orderItemQtd custom-select custom-select-sm form-control form-control-sm'>" + qtdOptions + "</select></td>                                                    <td><label id='order" + elements[i].orderId + "line" + nextRow + "value' class='texto' style='padding:0 10px;'>0</label></td>                                                    <td><label id='time" + nextRow + "' class='texto'>" + formatTime(elements[i].orderItems[j].itemOrderedAt) + "</label></td>                                                </tr>";
 
                 $("#order" + elements[i].orderId).append(markup);
             
                 $('#order' + elements[i].orderId + 'product' + nextRow + ' option').filter(function() { 
                     return ($(this).text() == elements[i].orderItems[j].productName); //To select Blue
+                }).prop('selected', true);
+
+                $('#order' + elements[i].orderId + 'qtd' + nextRow + ' option').filter(function() { 
+                    return ($(this).text() == elements[i].orderItems[j].quantity); //To select Blue
                 }).prop('selected', true);
             }
         }
