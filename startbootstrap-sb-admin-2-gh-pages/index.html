@@ -28,6 +28,10 @@
         line-height: 1.5;
         color: #858796;
     }
+
+    .btnBorder{
+        border-color: #858796;
+    }
     </style>
 
 </head>
@@ -483,7 +487,7 @@
                                                     <span class="text">Pendurar</span>
                                             </a>
 
-                                            <a href="#" id="fecharOrder1" class="btn btn-success btn-icon-split btn-sm fecharOrder" onclick="fecharOrder(1)" data-toggle="modal" data-target="#modal">
+                                            <a href="#" id="fecharOrder1" class="btn btn-success btn-icon-split btn-sm fecharOrder" onclick="fecharOrder(1)">
                                                     <span class="icon text-white-50">
                                                         <i class="fas fa-check"></i>
                                                     </span>
@@ -507,18 +511,21 @@
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title" id="modal-title-order">Modal Header</h4>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <button type="button" class="close" data-dismiss="modal" id="modal-close">&times;</button>
         </div>
         <div class="modal-body" id="modal-body">
           <p>Some text in the modal.</p>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal" style="border-color: #858796;" onclick="fecharOrder()">Confirmar pagamento e encerrar comanda</button>
+        <div class="modal-footer" id="modal-footer">
+            <button type="button" class="btn btn-default btnBorder" data-dismiss="modal" onclick="fecharOrder()">Confirmar pagamento e encerrar comanda</button>
         </div>
       </div>
       
     </div>
   </div>
+
+  <!-- Modal Button -->
+  <button id="btnModal" data-toggle="modal" data-target="#modal" style="display:none;"></button>
 
                 
 
@@ -644,7 +651,6 @@
             orderNr = $(this).attr("nr")
             nextRow = $('#order' + orderNr).find('tr').length
             var data = createOrderItem(orderNr)
-            console.log(data)
             
             var markup = "<tr>                                                    <td>                                                        <select name='products' id='order" + orderNr + "product" + nextRow + "' orderItemId='" + data.orderItemId + "' class='valueModifier orderItemProduct custom-select custom-select-sm form-control form-control-sm'>                                                            <option disabled selected value>selecione</option>" + productsOptions + "</select>                                                    </td>                                                    <td><select name='qtd' id='order" + orderNr + "qtd" + nextRow + "' orderItemId='" + data.orderItemId + "' class='valueModifier orderItemQtd custom-select custom-select-sm form-control form-control-sm'>" + qtdOptions + "</select></td>                                                    <td><label id='order" + orderNr + "line" + nextRow + "value' class='texto' style='padding:0 10px;'>0</label></td>                                                    <td><label id='time" + nextRow + "' class='texto'>" + formatTime(data.itemOrderedAt) + "</label></td>                                                </tr>";
 
@@ -652,17 +658,14 @@
         });
 
         $("#orders").on('click', '.btnMinus', function(){
-            alert("Criar modal pedindo p confirmar esta ação")
-
             orderNr = $(this).attr("nr")
+            
+            var title = "Deseja remover o último item desta comanda?"
+            var body = "<center><button class='btn btn-default btnBorder' onclick='closeModal()'>Não</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button class='btn btn-default btnBorder' onclick=removeOrderItem(" + orderNr + ")>Sim</button></center>"
 
             if($('#order' + orderNr).find("tr").length > 1){
-                orderItemId = $('#order' + orderNr).find("tr").last().find("td").first().find("select").attr("orderitemid")
-                deleteOrderItem(orderItemId)
-                $('#order' + orderNr).find("tr").last().remove();
+                addContentOnModal(title, body, '')
             }
-            
-            refreshAllValues()
         });
 
         $(document).on('click', '.valueModifier', function() {
@@ -695,23 +698,39 @@
 
 });
 
-    function addContentOnModal(title, body){
+    function closeModal(){
+        $('#modal-close').click()
+    }
+
+    function removeOrderItem(orderNr){
+            orderItemId = $('#order' + orderNr).find("tr").last().find("td").first().find("select").attr("orderitemid")
+            deleteOrderItem(orderItemId)
+            $('#order' + orderNr).find("tr").last().remove();
+            
+            refreshAllValues()
+            closeModal()
+    }
+
+    function addContentOnModal(title, body, footer){
         $('#modal-title-order').text(title)
         $('#modal-body').html(body)
-
+        $('#modal-footer').html(footer)
+        $('#btnModal').click()
     }
 
     function fecharOrder(id){
         var order = getById(id)
-        var title = 'Fechar comanda: ' + order.name
-        var body = buildItemsResume(order.orderItems)
 
         if(order.orderItems.length == 0){
             deleteOrder(id)
             $('#divOrder' + id).remove()
+            return
         }
 
-        addContentOnModal(title, body)
+        var title = 'Fechar comanda: ' + order.name
+        var body = buildItemsResume(order.orderItems)
+
+        addContentOnModal(title, body, '')
     } 
 
     function buildItemsResume(items){
@@ -888,7 +907,7 @@
 
     function loadOrders(elements){
         for(i = 0; i <= elements.length -1; i++){
-            var newDiv = "                        <div id='divOrder" + elements[i].orderId + "' class='order col-xl-3 col-md-6 mb-4'>                            <div id='bordaOrder" + elements[i].orderId + "' class='card shadow h-100 py-2' style='border-left: .25rem solid #" + randomColor() + " !important'>                                <div class='card-body'>                                    <div class='row no-gutters align-items-center'>                                        <div class='col mr-2'>                                            <div class='text-xs font-weight-bold text-primary text-uppercase mb-1'>                                                <label contenteditable='true' class='orderTitle' id='orderTitle" + elements[i].orderId + "'>" + elements[i].name + "</label></div>                                            <div class='h5 mb-0 font-weight-bold text-gray-800'>                                                                                            <table width='345x' class='tblOrder' id='order" + elements[i].orderId + "'>                                                <tr>                                                    <th width='160px'>Produto</th>                                                    <th width='60px'>Qtd</th>                                                    <th style='padding:0 10px;' width='66px'>R$</th>                                                    <th>Hora</th>                                                </tr>                                                </table>                                                                                                                                    <table width='345x'>                                                <tr>                                                    <th width='160px'>                                                            <a href='#' class='btnMinus btn btn-danger btn-circle' nr=" + elements[i].orderId + " id='btnMinusOrder" + elements[i].orderId + "'>                                                                    <i class='fas fa-minus'></i>                                                            </a>                                                            <a href='#' class='btnPlus btn btn-info btn-circle' nr=" + elements[i].orderId + " id='btnPlusOrder" + elements[i].orderId + "'>                                                                    <i class='fas fa-plus'></i>                                                            </a>                                                    </th>                                                    <th width='60px'>Total</th>                                                    <th style='padding:0 10px;'><div id='total" + elements[i].orderId + "'>0</div></th>                                                    <th></th>                                                </tr>                                            </table>                                            <br><br>                                            <a href='#' id='pendurar" + elements[i].orderId + "' class='btn btn-warning btn-icon-split btn-sm'>                                                    <span class='icon text-white-50'>                                                        <i class='fas fa-info-circle'></i>                                                    </span>                                                    <span class='text'>Pendurar</span>                                            </a>                                            <a href='#' id='fecharOrder" + elements[i].orderId + "' class='btn btn-success btn-icon-split btn-sm fecharOrder' onclick='fecharOrder(" + elements[i].orderId + ")' data-toggle='modal' data-target='#modal'>                                                    <span class='icon text-white-50'>                                                        <i class='fas fa-check'></i>                                                    </span>                                                    <span class='text'>Fechar comanda</span>                                            </a>                                            </div>                                        </div>                                    </div>                                </div>                            </div>                        </div>"
+            var newDiv = "                        <div id='divOrder" + elements[i].orderId + "' class='order col-xl-3 col-md-6 mb-4'>                            <div id='bordaOrder" + elements[i].orderId + "' class='card shadow h-100 py-2' style='border-left: .25rem solid #" + randomColor() + " !important'>                                <div class='card-body'>                                    <div class='row no-gutters align-items-center'>                                        <div class='col mr-2'>                                            <div class='text-xs font-weight-bold text-primary text-uppercase mb-1'>                                                <label contenteditable='true' class='orderTitle' id='orderTitle" + elements[i].orderId + "'>" + elements[i].name + "</label></div>                                            <div class='h5 mb-0 font-weight-bold text-gray-800'>                                                                                            <table width='345x' class='tblOrder' id='order" + elements[i].orderId + "'>                                                <tr>                                                    <th width='160px'>Produto</th>                                                    <th width='60px'>Qtd</th>                                                    <th style='padding:0 10px;' width='66px'>R$</th>                                                    <th>Hora</th>                                                </tr>                                                </table>                                                                                                                                    <table width='345x'>                                                <tr>                                                    <th width='160px'>                                                            <a href='#' class='btnMinus btn btn-danger btn-circle' nr=" + elements[i].orderId + " id='btnMinusOrder" + elements[i].orderId + "'>                                                                    <i class='fas fa-minus'></i>                                                            </a>                                                            <a href='#' class='btnPlus btn btn-info btn-circle' nr=" + elements[i].orderId + " id='btnPlusOrder" + elements[i].orderId + "'>                                                                    <i class='fas fa-plus'></i>                                                            </a>                                                    </th>                                                    <th width='60px'>Total</th>                                                    <th style='padding:0 10px;'><div id='total" + elements[i].orderId + "'>0</div></th>                                                    <th></th>                                                </tr>                                            </table>                                            <br><br>                                            <a href='#' id='pendurar" + elements[i].orderId + "' class='btn btn-warning btn-icon-split btn-sm'>                                                    <span class='icon text-white-50'>                                                        <i class='fas fa-info-circle'></i>                                                    </span>                                                    <span class='text'>Pendurar</span>                                            </a>                                            <a href='#' id='fecharOrder" + elements[i].orderId + "' class='btn btn-success btn-icon-split btn-sm fecharOrder' onclick='fecharOrder(" + elements[i].orderId + ")'>                                                    <span class='icon text-white-50'>                                                        <i class='fas fa-check'></i>                                                    </span>                                                    <span class='text'>Fechar comanda</span>                                            </a>                                            </div>                                        </div>                                    </div>                                </div>                            </div>                        </div>"
             $("#orders").append(newDiv);
             $(".orderTitle").keypress(function(e){ return e.which != 13; });
 
@@ -932,7 +951,7 @@
             dataType: 'json',
             success: function (data) {
                 var newOrderNr = data.orderId
-                var newDiv = "                        <div id='divOrder" + newOrderNr + "' class='order col-xl-3 col-md-6 mb-4'>                            <div id='bordaOrder" + newOrderNr + "' class='card shadow h-100 py-2' style='border-left: .25rem solid #" + randomColor() + " !important'>                                <div class='card-body'>                                    <div class='row no-gutters align-items-center'>                                        <div class='col mr-2'>                                            <div class='text-xs font-weight-bold text-primary text-uppercase mb-1'>                                                <label contenteditable='true' class='orderTitle' id='orderTitle" + newOrderNr + "'>" + data.name + "</label></div>                                            <div class='h5 mb-0 font-weight-bold text-gray-800'>                                                                                            <table width='345x' class='tblOrder' id='order" + newOrderNr + "'>                                                <tr>                                                    <th width='160px'>Produto</th>                                                    <th width='60px'>Qtd</th>                                                    <th style='padding:0 10px;' width='66px'>R$</th>                                                    <th>Hora</th>                                                </tr>                                            </table>                                                                                                                                    <table width='345x'>                                                <tr>                                                    <th width='160px'>                                                            <a href='#' class='btnMinus btn btn-danger btn-circle' nr=" + newOrderNr + " id='btnMinusOrder" + newOrderNr + "'>                                                                    <i class='fas fa-minus'></i>                                                            </a>                                                            <a href='#' class='btnPlus btn btn-info btn-circle' nr=" + newOrderNr + " id='btnPlusOrder" + newOrderNr + "'>                                                                    <i class='fas fa-plus'></i>                                                            </a>                                                    </th>                                                    <th width='60px'>Total</th>                                                    <th style='padding:0 10px;'><div id='total" + newOrderNr + "'>0</div></th>                                                    <th></th>                                                </tr>                                            </table>                                            <br><br>                                            <a href='#' id='pendurar" + newOrderNr + "' class='btn btn-warning btn-icon-split btn-sm'>                                                    <span class='icon text-white-50'>                                                        <i class='fas fa-info-circle'></i>                                                    </span>                                                    <span class='text'>Pendurar</span>                                            </a>                                            <a href='#' id='fecharOrder" + newOrderNr + "' class='btn btn-success btn-icon-split btn-sm fecharOrder' onclick='fecharOrder(" + elements[i].orderId + ")' data-toggle='modal' data-target='#modal'>                                                    <span class='icon text-white-50'>                                                        <i class='fas fa-check'></i>                                                    </span>                                                    <span class='text'>Fechar comanda</span>                                            </a>                                            </div>                                        </div>                                    </div>                                </div>                            </div>                        </div>"
+                var newDiv = "                        <div id='divOrder" + newOrderNr + "' class='order col-xl-3 col-md-6 mb-4'>                            <div id='bordaOrder" + newOrderNr + "' class='card shadow h-100 py-2' style='border-left: .25rem solid #" + randomColor() + " !important'>                                <div class='card-body'>                                    <div class='row no-gutters align-items-center'>                                        <div class='col mr-2'>                                            <div class='text-xs font-weight-bold text-primary text-uppercase mb-1'>                                                <label contenteditable='true' class='orderTitle' id='orderTitle" + newOrderNr + "'>" + data.name + "</label></div>                                            <div class='h5 mb-0 font-weight-bold text-gray-800'>                                                                                            <table width='345x' class='tblOrder' id='order" + newOrderNr + "'>                                                <tr>                                                    <th width='160px'>Produto</th>                                                    <th width='60px'>Qtd</th>                                                    <th style='padding:0 10px;' width='66px'>R$</th>                                                    <th>Hora</th>                                                </tr>                                            </table>                                                                                                                                    <table width='345x'>                                                <tr>                                                    <th width='160px'>                                                            <a href='#' class='btnMinus btn btn-danger btn-circle' nr=" + newOrderNr + " id='btnMinusOrder" + newOrderNr + "'>                                                                    <i class='fas fa-minus'></i>                                                            </a>                                                            <a href='#' class='btnPlus btn btn-info btn-circle' nr=" + newOrderNr + " id='btnPlusOrder" + newOrderNr + "'>                                                                    <i class='fas fa-plus'></i>                                                            </a>                                                    </th>                                                    <th width='60px'>Total</th>                                                    <th style='padding:0 10px;'><div id='total" + newOrderNr + "'>0</div></th>                                                    <th></th>                                                </tr>                                            </table>                                            <br><br>                                            <a href='#' id='pendurar" + newOrderNr + "' class='btn btn-warning btn-icon-split btn-sm'>                                                    <span class='icon text-white-50'>                                                        <i class='fas fa-info-circle'></i>                                                    </span>                                                    <span class='text'>Pendurar</span>                                            </a>                                            <a href='#' id='fecharOrder" + newOrderNr + "' class='btn btn-success btn-icon-split btn-sm fecharOrder' onclick='fecharOrder(" + newOrderNr + ")'>                                                    <span class='icon text-white-50'>                                                        <i class='fas fa-check'></i>                                                    </span>                                                    <span class='text'>Fechar comanda</span>                                            </a>                                            </div>                                        </div>                                    </div>                                </div>                            </div>                        </div>"
                 $("#orders").append(newDiv);
                 $(".orderTitle").keypress(function(e){ return e.which != 13; });
             }
