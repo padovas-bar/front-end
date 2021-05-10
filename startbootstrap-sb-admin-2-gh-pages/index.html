@@ -29,8 +29,19 @@
         color: #858796;
     }
 
-    .btnBorder{
+    .btnGrey{
         border-color: #858796;
+    }
+
+    .btnGreen{
+        /*color: #1cc88a;*/
+        color: #00AC79;
+        border-color: #00AC79;
+    }
+
+    .btnGreen:hover{
+        color: #00AC79;
+        border-color: #00AC79;
     }
     </style>
 
@@ -517,7 +528,6 @@
           <p>Some text in the modal.</p>
         </div>
         <div class="modal-footer" id="modal-footer">
-            <button type="button" class="btn btn-default btnBorder" data-dismiss="modal" onclick="fecharOrder()">Confirmar pagamento e encerrar comanda</button>
         </div>
       </div>
       
@@ -647,6 +657,12 @@
         var color = "border-left: .25rem solid #" + randomColor() + " !important"
         $('#bordaOrder1').attr('style', color) //deletar quando remover a comanda fixa deste html
 
+        $("#orders").on('focusout', '.orderTitle', function(){
+            orderNr = $(this).attr("id").replace("orderTitle", "")
+            name = $(this).text()
+            updateOrderName(orderNr, name)
+        });
+
         $("#orders").on('click', '.btnPlus', function(){
             orderNr = $(this).attr("nr")
             nextRow = $('#order' + orderNr).find('tr').length
@@ -661,7 +677,7 @@
             orderNr = $(this).attr("nr")
             
             var title = "Deseja remover o último item desta comanda?"
-            var body = "<center><button class='btn btn-default btnBorder' onclick='closeModal()'>Não</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button class='btn btn-default btnBorder' onclick=removeOrderItem(" + orderNr + ")>Sim</button></center>"
+            var body = "<center><button class='btn btn-default btnGrey' onclick='closeModal()'>Não</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button class='btn btn-default btnGreen' onclick=removeOrderItem(" + orderNr + ")>Sim</button></center>"
 
             if($('#order' + orderNr).find("tr").length > 1){
                 addContentOnModal(title, body, '')
@@ -728,9 +744,10 @@
         }
 
         var title = 'Fechar comanda: ' + order.name
-        var body = buildItemsResume(order.orderItems)
+        var body = buildItemsResume(order.orderItems) + buildPartialPaymentsResume() + buildTotal()
+        var footer = "<button class='btn btn-default btnGrey'>Pagamento parcial</button><button class='btn btn-default btnGreen' data-dismiss='modal' onclick=''>Confirmar pagamento e encerrar comanda</button>"
 
-        addContentOnModal(title, body, '')
+        addContentOnModal(title, body, footer)
     } 
 
     function buildItemsResume(items){
@@ -747,10 +764,15 @@
         return body
     }
 
-    ///function fecharOrder(){
-    //    var order = "M" + $('#fecharOrderModal').attr('order').substring(1)
-    //    $('#div' + order).remove()
-    //} 
+    function buildPartialPaymentsResume(){
+        var body = "<br><table><thead><tr><th width='160px'>Pagamento Parcial</th><th width='60px'></th><th width='66px'>R$</th><th>Hora</th></tr></thead></table>"
+        return body
+    }
+
+    function buildTotal(){
+        var body = "<br><table><thead><tr><th width='160px'>Total:</th><th width='60px'></th><th width='66px'>XXX</th><th></th></tr></thead></table>"
+        return body
+    }
 
     function refreshAllValues(){
         $( ".order" ).each(function( index ) {
@@ -777,6 +799,25 @@
     function randomColor(){
         return '4e73df'
         //return Math.floor(Math.random()*16777215).toString(16)
+    }
+
+    function updateOrderName(orderNr, name){
+        $.ajax({
+            url: 'http://localhost:8080/order/' + orderNr + '/name',
+            type: 'patch',
+            data: JSON.stringify({ name: name}),
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            dataType: 'json',
+            success: function (data) {
+            },
+            error: function(data){
+                console.log(data)
+                alert("Erro de conexão com o servidor. Esta alteração não foi salva. Contate o administrador.")
+            }
+        });
     }
 
     function deleteOrder(id){
