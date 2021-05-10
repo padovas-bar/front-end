@@ -736,6 +736,7 @@
 
     function fecharOrder(id){
         var order = getById(id)
+        var partialPayments = getPartialPayment(id)
 
         if(order.orderItems.length == 0){
             deleteOrder(id)
@@ -744,11 +745,23 @@
         }
 
         var title = 'Fechar comanda: ' + order.name
-        var body = buildItemsResume(order.orderItems) + buildPartialPaymentsResume() + buildTotal()
-        var footer = "<button class='btn btn-default btnGrey'>Pagamento parcial</button><button class='btn btn-default btnGreen' data-dismiss='modal' onclick=''>Confirmar pagamento e encerrar comanda</button>"
+        var body = buildItemsResume(order.orderItems) + buildPartialPaymentsResume(partialPayments) + buildTotal()
+        var footer = "<button class='btn btn-default btnGrey' onclick=partialPayment(" + id + ")>Pagamento parcial</button><button class='btn btn-default btnGreen' data-dismiss='modal' onclick=''>Confirmar pagamento e encerrar comanda</button>"
 
         addContentOnModal(title, body, footer)
-    } 
+    }
+
+    
+    function partialPayment(id){
+        closeModal()
+
+        var title = "Pagamento parcial"
+        var body = "Descrição: <input type='text' placeholder='Descrição...' id='partialPaymentDesc' class='form-control form-control-sm'>" + "Valor: <input type='text' placeholder='0.0' id='partialPaymentValue' class='form-control form-control-sm'>"
+        var footer = "<button class='btn btn-default btnGreen' onclick=createPartialPayment()>Confirmar pagamento parcial</button>"
+
+        setTimeout(() => {  addContentOnModal(title, body, footer) }, 500);
+    }
+
 
     function buildItemsResume(items){
         var body = "<table><thead><tr><th width='160px'>Produto</th><th width='60px'>Qtd</th><th width='66px'>R$</th><th>Hora</th></tr></thead>"
@@ -764,9 +777,22 @@
         return body
     }
 
-    function buildPartialPaymentsResume(){
-        var body = "<br><table><thead><tr><th width='160px'>Pagamento Parcial</th><th width='60px'></th><th width='66px'>R$</th><th>Hora</th></tr></thead></table>"
-        return body
+    function buildPartialPaymentsResume(partialPayments){
+        if(partialPayments.length > 0){
+            var body = "<br><table><thead><tr><th width='160px'>Pagamento Parcial</th><th width='60px'></th><th width='66px'>R$</th><th>Hora</th></tr></thead>"
+            for(i = 0; i <= partialPayments.length -1; i++){
+                body += "<tr>"
+                body += "<td>" + partialPayments[i].description + "</td>"
+                body += "<td></td>"
+                body += "<td>" + partialPayments[i].price + "</td>"
+                body += "<td>" + formatTime(partialPayments[i].paidAt) + "</td>"
+                body += "</tr>"
+            }
+            body += "</table>"
+            return body
+        } else{
+            return ""
+        }
     }
 
     function buildTotal(){
@@ -799,6 +825,23 @@
     function randomColor(){
         return '4e73df'
         //return Math.floor(Math.random()*16777215).toString(16)
+    }
+
+    function getPartialPayment(id){
+        var callback
+        $.ajax({
+            url: 'http://localhost:8080/partial-payment/' + id,
+            type: 'get',
+            headers: {
+                "Accept": "application/json"
+            },
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                callback = data
+            }
+        });
+        return callback
     }
 
     function updateOrderName(orderNr, name){
