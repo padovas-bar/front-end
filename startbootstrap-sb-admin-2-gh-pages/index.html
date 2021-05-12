@@ -756,9 +756,16 @@
 
         var title = 'Fechar comanda: ' + order.name
         var body = buildItemsResume(order.orderItems) + buildPartialPaymentsResume(partialPayments) + buildTotal(order.orderItems, partialPayments)
-        var footer = "<button class='btn btn-default btnGrey' onclick=partialPayment(" + id + ")>Pagamento parcial</button><button class='btn btn-default btnGreen' data-dismiss='modal' onclick=''>Confirmar pagamento e encerrar comanda</button>"
+        var footer = "<button class='btn btn-default btnGrey' onclick=partialPayment(" + id + ")>Pagamento parcial</button><button class='btn btn-default btnGreen' data-dismiss='modal' onclick='totalPayment(" + id + ")'>Confirmar pagamento e encerrar comanda</button>"
 
         addContentOnModal(title, body, footer)
+    }
+
+    function totalPayment(id){
+        closeOrder(id)
+        closeModal()
+        setTimeout(() => { $('#divOrder' + id).remove() }, 500);
+        
     }
 
     
@@ -811,8 +818,6 @@
 
         for (i = 0; i <= items.length -1; i++){
             valItems += items[i].productPrice * items[i].quantity
-            console.log(items[i].productPrice)
-            console.log(items[i].quantity)
 
         }
 
@@ -820,12 +825,9 @@
             valPartialPayments += partialPayments[i].value
         }
 
-        console.log(valItems)
-        console.log(valPartialPayments)
-
         var total = (valItems - valPartialPayments).toFixed(2)
 
-        var body = "<br><table><thead><tr><th width='160px'>Total:</th><th width='60px'></th><th width='66px'>" + total + "</th><th></th></tr></thead></table>"
+        var body = "<br><table><thead><tr><th width='160px'>Total:</th><th width='60px'></th><th width='66px' id='resumeTotal'>" + total + "</th><th></th></tr></thead></table>"
         return body
     }
 
@@ -856,6 +858,24 @@
         //return Math.floor(Math.random()*16777215).toString(16)
     }
 
+    function closeOrder(id){
+        var total = $('#resumeTotal').text()
+        $.ajax({
+            url: 'http://localhost:8080/order/' + id + '/close',
+            type: 'patch',          
+            data: JSON.stringify({ total: total }),
+            headers: {
+                "Content-Type": "application/json"
+            },
+            success: function (data) {
+            },
+            error: function(data){
+                console.log(data)
+                alert("Erro de conexão com o servidor. Esta alteração não foi salva. Contate o administrador.")
+            }
+        });
+    }
+
     function createPartialPayment(orderId, desc, value){
         $.ajax({
             url: 'http://localhost:8080/partial-payment',
@@ -873,7 +893,6 @@
                 alert("Erro de conexão com o servidor. Esta alteração não foi salva. Contate o administrador.")
             }
         });
-
     }
 
     function getPartialPayment(id){
