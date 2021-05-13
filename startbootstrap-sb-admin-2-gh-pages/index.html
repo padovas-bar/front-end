@@ -45,7 +45,11 @@
     }
 
     .btnYellow{
-        /*color: #1cc88a;*/
+        color: #f6c23e;
+        border-color: #f6c23e;
+    }
+
+    .btnYellow:hover{
         color: #f6c23e;
         border-color: #f6c23e;
     }
@@ -765,7 +769,7 @@
 
         var title = 'Fechar comanda: ' + order.name
         var body = buildItemsResume(order.orderItems) + buildPartialPaymentsResume(partialPayments) + buildTotal(order.orderItems, partialPayments)
-        var footer = "<button class='btn btn-default btnYellow' onclick=pendurar(" + id + ")>Pendurar</button><button class='btn btn-default btnGrey' onclick=partialPayment(" + id + ")>Pagamento parcial</button><button class='btn btn-default btnGreen' data-dismiss='modal' onclick='totalPayment(" + id + ")'>Confirmar pagamento e encerrar comanda</button>"
+        var footer = "<button class='btn btn-default btnYellow' onclick=hang(" + id + ")>Pendurar</button><button class='btn btn-default btnGrey' onclick=partialPayment(" + id + ")>Pagamento parcial</button><button class='btn btn-default btnGreen' data-dismiss='modal' onclick='totalPayment(" + id + ")'>Confirmar pagamento e encerrar comanda</button>"
 
         addContentOnModal(title, body, footer)
     }
@@ -776,7 +780,6 @@
         setTimeout(() => { $('#divOrder' + id).remove() }, 500);
         
     }
-
     
     function partialPayment(id){
         closeModal()
@@ -788,6 +791,38 @@
         setTimeout(() => {  addContentOnModal(title, body, footer) }, 500);
     }
 
+    function hang(id){
+        closeModal()
+
+        var title = "Pendurar"
+        var body = "Clientes: <div id='trustedClientsDiv'></div>"
+        var footer = "<button orderId='" + id + "' class='btn btn-default btnGreen' onclick='confirmHang(" + id + ")'>Confirmar associação e pendurar</button>"
+
+        setTimeout(() => {  
+            addContentOnModal(title, body, footer)
+            loadTrustedClients() }, 500);
+    }
+
+    function loadTrustedClients(){
+        var clients = getTrustedClients()
+
+        var clientsOptions = "<select id='trustedClients' class='custom-select custom-select-sm form-control form-control-sm'><option disabled='' selected='' value=''>selecione</option>"
+        for(i = 0; i <= clients.length -1; i++){
+            clientsOptions += '<option value="' + clients[i].trustedClientId + '">' + clients[i].name + '</option>'
+        }
+        clientsOptions += "</select>"
+
+        $('#trustedClientsDiv').html(clientsOptions)
+    }
+
+    function confirmHang(id){
+        var clientId = $("#trustedClients option:selected").val()
+        
+        hangOrder(id, clientId)
+
+        closeModal()
+        setTimeout(() => { $('#divOrder' + id).remove() }, 500);
+    }
 
     function buildItemsResume(items){
         var body = "<table id='orderItemsResume'><thead><tr><th width='160px'>Produto</th><th width='60px'>Qtd</th><th width='66px'>R$</th><th>Hora</th></tr></thead>"
@@ -865,6 +900,44 @@
     function randomColor(){
         return '4e73df'
         //return Math.floor(Math.random()*16777215).toString(16)
+    }
+
+    function hangOrder(id, clientId){
+        var callback
+        $.ajax({
+            url: 'http://localhost:8080/order/' + id + '/hang',
+            type: 'patch',
+            data: JSON.stringify({ trustedClientId: clientId }),
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            dataType: 'json',
+            success: function (data) {
+            },
+            error: function(data){
+                console.log(data)
+                alert("Erro de conexão com o servidor. Esta alteração não foi salva. Contate o administrador.")
+            }
+        });
+        return callback
+    }
+
+    function getTrustedClients(){
+        var callback
+        $.ajax({
+            url: 'http://localhost:8080/trusted-client/',
+            type: 'get',
+            headers: {
+                "Accept": "application/json"
+            },
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                callback = data
+            }
+        });
+        return callback
     }
 
     function closeOrder(id){
