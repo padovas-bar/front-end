@@ -553,6 +553,7 @@
 
   <!-- Modal Button -->
   <button id="btnModal" data-toggle="modal" data-target="#modal" style="display:none;"></button>
+  <div id="resumeTotalMirror" style="display:none;"></div>
 
                 
 
@@ -816,9 +817,9 @@
     }
 
     function confirmHang(id){
-        var clientId = $("#trustedClients option:selected").val()
+        var clientName = $("#trustedClients option:selected").text()
         
-        hangOrder(id, clientId)
+        closeOrder(id, clientName)
 
         closeModal()
         setTimeout(() => { $('#divOrder' + id).remove() }, 500);
@@ -872,6 +873,8 @@
         var total = (valItems - valPartialPayments).toFixed(2)
 
         var body = "<br><table><thead><tr><th width='160px'>Total:</th><th width='60px'></th><th width='66px' id='resumeTotal'>" + total + "</th><th></th></tr></thead></table>"
+        $('#resumeTotalMirror').text(total)
+
         return body
     }
 
@@ -902,27 +905,6 @@
         //return Math.floor(Math.random()*16777215).toString(16)
     }
 
-    function hangOrder(id, clientId){
-        var callback
-        $.ajax({
-            url: 'http://localhost:8080/order/' + id + '/hang',
-            type: 'patch',
-            data: JSON.stringify({ trustedClientId: clientId }),
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            dataType: 'json',
-            success: function (data) {
-            },
-            error: function(data){
-                console.log(data)
-                alert("Erro de conexão com o servidor. Esta alteração não foi salva. Contate o administrador.")
-            }
-        });
-        return callback
-    }
-
     function getTrustedClients(){
         var callback
         $.ajax({
@@ -940,12 +922,12 @@
         return callback
     }
 
-    function closeOrder(id){
-        var total = $('#resumeTotal').text()
+    function closeOrder(id, trustedClientName){
+        var total = $('#resumeTotalMirror').text()
         $.ajax({
             url: 'http://localhost:8080/order/' + id + '/close',
             type: 'patch',          
-            data: JSON.stringify({ total: total }),
+            data: JSON.stringify({ total: total, trustedClientName : trustedClientName }),
             headers: {
                 "Content-Type": "application/json"
             },
