@@ -451,7 +451,6 @@
     
       <!-- Modal Button -->
       <button id="btnModal" data-toggle="modal" data-target="#modal" style="display:none;"></button>
-      <div id="resumeTotalMirror" style="display:none;"></div>
 
             </div>
             <!-- End of Main Content -->
@@ -548,14 +547,15 @@
     }
 
     function fillTable(elements){
+        $('.tblLine').remove();
         for(i = 0; i <= elements.length -1; i++){
-            var newRow = "<tr id='" + elements[i].orderHistoryId + "'>"
+            var newRow = "<tr id='" + elements[i].orderHistoryId + "' class='tblLine'>"
             newRow += "<td>" + elements[i].pendentOwner + "</td>"
             newRow += "<td>" + elements[i].name + "</td>"
             newRow += "<td>" + elements[i].statusChangedAt + "</td>"
-            newRow += "<td>" + elements[i].totalValue + "</td>"
-            newRow += "<td>" + elements[i].partialPaidValue + "</td>"
-            newRow += "<td class='remainingValue'>" + elements[i].remainingValue + "</td>"
+            newRow += "<td>" + elements[i].totalValue.toFixed(2) + "</td>"
+            newRow += "<td>" + elements[i].partialPaidValue.toFixed(2) + "</td>"
+            newRow += "<td class='remainingValue'>" + elements[i].remainingValue.toFixed(2) + "</td>"
             newRow += "<td><button onclick=fecharOrder('" + elements[i].orderHistoryId + "')>Fechar comanda</button></td>"
             newRow += "</tr>"
             $("#clientTable tbody").append(newRow);
@@ -657,7 +657,6 @@
         var total = (valItems - valPartialPayments).toFixed(2)
 
         var body = "<br><table><thead><tr><th width='160px'>Total:</th><th width='60px'></th><th width='66px' id='resumeTotal'>" + total + "</th><th></th></tr></thead></table>"
-        $('#resumeTotalMirror').text(total)
 
         return body
     }
@@ -705,6 +704,8 @@
             },
             dataType: 'json',
             success: function (data) {
+                getAll()
+                refreshTotal()
             },
             error: function(data){
                 console.log(data)
@@ -720,15 +721,16 @@
     }
 
     function closeOrder(id, trustedClientName){
-        var total = $('#resumeTotalMirror').text()
         $.ajax({
             url: 'http://localhost:8080/order/' + id + '/close/history',
             type: 'patch',          
-            data: JSON.stringify({ total: total, trustedClientName : trustedClientName }),
+            data: JSON.stringify({ total: null, trustedClientName: null }),
             headers: {
                 "Content-Type": "application/json"
             },
             success: function (data) {
+                getAll()
+                refreshTotal()
             },
             error: function(data){
                 console.log(data)

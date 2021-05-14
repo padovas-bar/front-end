@@ -519,7 +519,6 @@
 
   <!-- Modal Button -->
   <button id="btnModal" data-toggle="modal" data-target="#modal" style="display:none;"></button>
-  <div id="resumeTotalMirror" style="display:none;"></div>
 
                 
 
@@ -836,7 +835,6 @@
         var total = (valItems - valPartialPayments).toFixed(2)
 
         var body = "<br><table><thead><tr><th width='160px'>Total:</th><th width='60px'></th><th width='66px' id='resumeTotal'>" + total + "</th><th></th></tr></thead></table>"
-        $('#resumeTotalMirror').text(total)
 
         return body
     }
@@ -886,7 +884,7 @@
     }
 
     function closeOrder(id, trustedClientName){
-        var total = $('#resumeTotalMirror').text()
+        var total = $('#total'+id).text()
         $.ajax({
             url: 'http://localhost:8080/order/' + id + '/close',
             type: 'patch',          
