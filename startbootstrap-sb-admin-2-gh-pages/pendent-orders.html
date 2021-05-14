@@ -428,6 +428,30 @@
                 </div>
                 <!-- /.container-fluid -->
 
+        <!-- Modal -->
+        <div class="modal fade" id="modal" role="dialog">
+            <div class="modal-dialog">
+            
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                <h4 class="modal-title" id="modal-title-order">Modal Header</h4>
+                <button type="button" class="close" data-dismiss="modal" id="modal-close">&times;</button>
+                </div>
+                <div class="modal-body" id="modal-body">
+                <p>Some text in the modal.</p>
+                </div>
+                <div class="modal-footer" id="modal-footer">
+                </div>
+            </div>
+            
+            </div>
+         </div>
+    
+      <!-- Modal Button -->
+      <button id="btnModal" data-toggle="modal" data-target="#modal" style="display:none;"></button>
+      <div id="resumeTotalMirror" style="display:none;"></div>
+
             </div>
             <!-- End of Main Content -->
 
@@ -528,10 +552,57 @@
             newRow += "<td>" + elements[i].totalValue + "</td>"
             newRow += "<td>" + elements[i].partialPaidValue + "</td>"
             newRow += "<td class='remainingValue'>" + elements[i].remainingValue + "</td>"
-            newRow += "<td><button>Fechar comanda</button></td>"
+            newRow += "<td><button onclick=fecharOrder('" + elements[i].orderHistoryId + "')>Fechar comanda</button></td>"
             newRow += "</tr>"
             $("#clientTable tbody").append(newRow);
         }
+    }
+
+    //Daqui p baixo Copia do index p montar o botao de fechar comanda
+
+    function fecharOrder(id){
+        var order = getById(id)
+        var partialPayments = getPartialPayment(id)
+
+        var title = 'Fechar comanda: ' + order.name
+        var body = buildItemsResume(order.orderItems) + buildPartialPaymentsResume(partialPayments) + buildTotal(order.orderItems, partialPayments)
+        var footer = "<button class='btn btn-default btnYellow' onclick=hang(" + id + ")>Pendurar</button><button class='btn btn-default btnGrey' onclick=partialPayment(" + id + ")>Pagamento parcial</button><button class='btn btn-default btnGreen' data-dismiss='modal' onclick='totalPayment(" + id + ")'>Confirmar pagamento e encerrar comanda</button>"
+
+        addContentOnModal(title, body, footer)
+    }
+
+    function getById(id){
+        var callback
+        $.ajax({
+            url: 'http://localhost:8080/order/' + id,
+            type: 'get',
+            headers: {
+                "Accept": "application/json"
+            },
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                callback = data
+            }
+        });
+        return callback
+    }
+
+    function getPartialPayment(id){
+        var callback
+        $.ajax({
+            url: 'http://localhost:8080/partial-payment/' + id,
+            type: 'get',
+            headers: {
+                "Accept": "application/json"
+            },
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                callback = data
+            }
+        });
+        return callback
     }
 
 
