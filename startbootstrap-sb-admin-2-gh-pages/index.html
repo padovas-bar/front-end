@@ -19,41 +19,7 @@
 
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
-
-    <style>
-    .texto{
-        font-family: 'Nunito','-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue',Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';
-        font-size: 1rem;
-        font-weight: 400;
-        line-height: 1.5;
-        color: #858796;
-    }
-
-    .btnGrey{
-        border-color: #858796;
-    }
-
-    .btnGreen{
-        /*color: #1cc88a;*/
-        color: #00AC79;
-        border-color: #00AC79;
-    }
-
-    .btnGreen:hover{
-        color: #00AC79;
-        border-color: #00AC79;
-    }
-
-    .btnYellow{
-        color: #f6c23e;
-        border-color: #f6c23e;
-    }
-
-    .btnYellow:hover{
-        color: #f6c23e;
-        border-color: #f6c23e;
-    }
-    </style>
+    <link href="css/padovas-bar.css" rel="stylesheet">
 
 </head>
 
@@ -724,18 +690,6 @@
             create()
         });
 
-        $("#orders").on('click', '.btnCreatePartialPayment', function(){
-            var orderId = $(this).attr('orderId')
-            var desc = $("#partialPaymentDesc").val()
-            var value = $("#partialPaymentValue").val()
-            
-            var orderId = $(this).attr('orderId')
-            createPartialPayment(orderId, desc, value)
-
-            closeModal()
-            setTimeout(() => {  fecharOrder(orderId) }, 500);
-        });
-
 });
 
     function closeModal(){
@@ -779,7 +733,6 @@
         closeOrder(id)
         closeModal()
         setTimeout(() => { $('#divOrder' + id).remove() }, 500);
-        
     }
     
     function partialPayment(id){
@@ -787,9 +740,19 @@
 
         var title = "Pagamento parcial"
         var body = "Descrição: <input type='text' placeholder='Descrição...' id='partialPaymentDesc' class='form-control form-control-sm'>" + "Valor: <input type='text' placeholder='0.0' id='partialPaymentValue' class='form-control form-control-sm'>"
-        var footer = "<button orderId='" + id + "' class='btn btn-default btnCreatePartialPayment btnGreen'>Confirmar pagamento parcial</button>"
+        var footer = "<button class='btn btn-default btnGreen' onclick='createPartialPayment(" + id + ")'>Confirmar pagamento parcial</button>"
 
         setTimeout(() => {  addContentOnModal(title, body, footer) }, 500);
+    }
+
+    function createPartialPayment(id){
+        var desc = $("#partialPaymentDesc").val()
+        var value = $("#partialPaymentValue").val()
+        
+        postPartialPayment(id, desc, value)
+
+        closeModal()
+        setTimeout(() => {  fecharOrder(id) }, 500);
     }
 
     function hang(id){
@@ -940,7 +903,7 @@
         });
     }
 
-    function createPartialPayment(orderId, desc, value){
+    function postPartialPayment(orderId, desc, value){
         $.ajax({
             url: 'http://localhost:8080/partial-payment',
             type: 'post',

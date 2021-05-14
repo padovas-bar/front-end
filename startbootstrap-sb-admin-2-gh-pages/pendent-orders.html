@@ -19,6 +19,7 @@
 
     <!-- Custom styles for this template -->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="css/padovas-bar.css" rel="stylesheet">
 
     <!-- Custom styles for this page -->
     <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
@@ -518,15 +519,18 @@
     $(document).ready(function () {
 
         getAll()
+        refreshTotal()
 
+    });
+
+    function refreshTotal(){
         var total = 0.0
         $( ".remainingValue" ).each(function( index ) {
             value = $(this).text()
             total += parseFloat(value)
         });
         $('#total').text(total)
-
-    });
+    }
 
     function getAll(){
         $.ajax({
@@ -566,7 +570,7 @@
 
         var title = 'Fechar comanda: ' + order.name
         var body = buildItemsResume(order.orderItems) + buildPartialPaymentsResume(partialPayments) + buildTotal(order.orderItems, partialPayments)
-        var footer = "<button class='btn btn-default btnYellow' onclick=hang(" + id + ")>Pendurar</button><button class='btn btn-default btnGrey' onclick=partialPayment(" + id + ")>Pagamento parcial</button><button class='btn btn-default btnGreen' data-dismiss='modal' onclick='totalPayment(" + id + ")'>Confirmar pagamento e encerrar comanda</button>"
+        var footer = "<button class='btn btn-default btnGrey' onclick=partialPayment(" + id + ")>Pagamento parcial</button><button class='btn btn-default btnGreen' data-dismiss='modal' onclick='totalPayment(" + id + ")'>Confirmar pagamento e encerrar comanda</button>"
 
         addContentOnModal(title, body, footer)
     }
@@ -574,7 +578,7 @@
     function getById(id){
         var callback
         $.ajax({
-            url: 'http://localhost:8080/order/' + id,
+            url: 'http://localhost:8080/order/history/' + id,
             type: 'get',
             headers: {
                 "Accept": "application/json"
@@ -591,7 +595,7 @@
     function getPartialPayment(id){
         var callback
         $.ajax({
-            url: 'http://localhost:8080/partial-payment/' + id,
+            url: 'http://localhost:8080/partial-payment/history/' + id,
             type: 'get',
             headers: {
                 "Accept": "application/json"
@@ -605,7 +609,137 @@
         return callback
     }
 
+    function buildItemsResume(items){
+        var body = "<table id='orderItemsResume'><thead><tr><th width='160px'>Produto</th><th width='60px'>Qtd</th><th width='66px'>R$</th><th>Hora</th></tr></thead>"
+        for(i = 0; i <= items.length -1; i++){
+            body += "<tr>"
+            body += "<td>" + items[i].productName + "</td>"
+            body += "<td>" + items[i].quantity + "</td>"
+            body += "<td>" + items[i].productPrice * items[i].quantity + "</td>"
+            body += "<td>" + formatTime(items[i].itemOrderedAt) + "</td>"
+            body += "</tr>"
+        }
+        body += "</table>"
+        return body
+    }
 
+    function buildPartialPaymentsResume(partialPayments){
+        if(partialPayments.length > 0){
+            var body = "<br><table id='orderPartialPaymentsResume'><thead><tr><th width='160px'>Pagamento Parcial</th><th width='60px'></th><th width='66px'>R$</th><th>Hora</th></tr></thead>"
+            for(i = 0; i <= partialPayments.length -1; i++){
+                body += "<tr>"
+                body += "<td>" + partialPayments[i].description + "</td>"
+                body += "<td></td>"
+                body += "<td>" + partialPayments[i].value + "</td>"
+                body += "<td>" + formatTime(partialPayments[i].paidAt) + "</td>"
+                body += "</tr>"
+            }
+            body += "</table>"
+            return body
+        } else{
+            return ""
+        }
+    }
+
+    function buildTotal(items, partialPayments){
+        var valItems = 0
+        var valPartialPayments = 0
+
+        for (i = 0; i <= items.length -1; i++){
+            valItems += items[i].productPrice * items[i].quantity
+
+        }
+
+        for (i = 0; i <= partialPayments.length -1; i++){
+            valPartialPayments += partialPayments[i].value
+        }
+
+        var total = (valItems - valPartialPayments).toFixed(2)
+
+        var body = "<br><table><thead><tr><th width='160px'>Total:</th><th width='60px'></th><th width='66px' id='resumeTotal'>" + total + "</th><th></th></tr></thead></table>"
+        $('#resumeTotalMirror').text(total)
+
+        return body
+    }
+
+    function addContentOnModal(title, body, footer){
+        $('#modal-title-order').text(title)
+        $('#modal-body').html(body)
+        $('#modal-footer').html(footer)
+        $('#btnModal').click()
+    }
+
+    function formatTime(time){
+        var date = new Date(time)
+        return ('0'+date.getHours()).slice(-2) + ":" + ('0'+date.getMinutes()).slice(-2)
+    }
+
+    function partialPayment(id){
+        closeModal()
+
+        var title = "Pagamento parcial"
+        var body = "Descrição: <input type='text' placeholder='Descrição...' id='partialPaymentDesc' class='form-control form-control-sm'>" + "Valor: <input type='text' placeholder='0.0' id='partialPaymentValue' class='form-control form-control-sm'>"
+        var footer = "<button class='btn btn-default btnGreen' onclick='createPartialPayment(" + id + ")'>Confirmar pagamento parcial</button>"
+
+        setTimeout(() => {  addContentOnModal(title, body, footer) }, 500);
+    }
+
+    function createPartialPayment(id){
+        var desc = $("#partialPaymentDesc").val()
+        var value = $("#partialPaymentValue").val()
+        
+        postPartialPayment(id, desc, value)
+
+        closeModal()
+        setTimeout(() => {  fecharOrder(id) }, 500);
+    }
+
+    function postPartialPayment(orderHistoryId, desc, value){
+        $.ajax({
+            url: 'http://localhost:8080/partial-payment/history',
+            type: 'post',
+            data: JSON.stringify({ orderHistoryId: orderHistoryId, description: desc, value: value}),
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            dataType: 'json',
+            success: function (data) {
+            },
+            error: function(data){
+                console.log(data)
+                alert("Erro de conexão com o servidor. Esta alteração não foi salva. Contate o administrador.")
+            }
+        });
+    }
+
+    function totalPayment(id){
+        closeOrder(id)
+        closeModal()
+        setTimeout(() => { $('#divOrder' + id).remove() }, 500);
+    }
+
+    function closeOrder(id, trustedClientName){
+        var total = $('#resumeTotalMirror').text()
+        $.ajax({
+            url: 'http://localhost:8080/order/' + id + '/close/history',
+            type: 'patch',          
+            data: JSON.stringify({ total: total, trustedClientName : trustedClientName }),
+            headers: {
+                "Content-Type": "application/json"
+            },
+            success: function (data) {
+            },
+            error: function(data){
+                console.log(data)
+                alert("Erro de conexão com o servidor. Esta alteração não foi salva. Contate o administrador.")
+            }
+        });
+    }
+
+    function closeModal(){
+        $('#modal-close').click()
+    }
     
     </script>
 
