@@ -410,7 +410,7 @@
                                     </thead>
                                     <tfoot>
                                         <tr>
-                                            <th></th>
+                                            <th id="trustedClientsTd"></th>
                                             <th></th>
                                             <th></th>
                                             <th></th>
@@ -519,6 +519,28 @@
 
         getAll()
         refreshTotal()
+        loadTrustedClients()
+
+        $(document).on('change', '#trustedClients', function() {
+            var clientName = $("option:selected", this).text()
+
+            $( ".tblLine" ).each(function( index ) {
+                name = $(this).find("td").first().text()
+                
+                if(clientName == name){
+                    $(this).show()
+                } else{
+                    $(this).hide()
+                }
+
+                if(clientName == 'Todos'){
+                    $(this).show()
+                }
+            });
+
+        });
+
+
 
     });
 
@@ -560,6 +582,36 @@
             newRow += "</tr>"
             $("#clientTable tbody").append(newRow);
         }
+    }
+
+
+    function loadTrustedClients(){
+        var clients = getTrustedClients()
+
+        var clientsOptions = "<select id='trustedClients' class='custom-select custom-select-sm form-control form-control-sm'><option selected='' value=''>Todos</option>"
+        for(i = 0; i <= clients.length -1; i++){
+            clientsOptions += '<option value="' + clients[i].trustedClientId + '">' + clients[i].name + '</option>'
+        }
+        clientsOptions += "</select>"
+
+        $('#trustedClientsTd').html(clientsOptions)
+    }
+
+    function getTrustedClients(){
+        var callback
+        $.ajax({
+            url: 'http://localhost:8080/trusted-client/',
+            type: 'get',
+            headers: {
+                "Accept": "application/json"
+            },
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                callback = data
+            }
+        });
+        return callback
     }
 
     //Daqui p baixo Copia do index p montar o botao de fechar comanda
