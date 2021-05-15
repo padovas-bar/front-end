@@ -19,6 +19,7 @@
 
     <!-- Custom styles for this template -->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="css/padovas-bar.css" rel="stylesheet">
 
     <!-- Custom styles for this page -->
     <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
@@ -411,7 +412,7 @@
                                             <th><select name="category" id="category" class="custom-select custom-select-sm form-control form-control-sm">
                                                     <option disabled selected value>selecione</option>
                                                 </select></th>
-                                            <th><button id="btnAdd">Adicionar</button></th>
+                                            <th><button id="btnAdd" class='btn btn-default btnGrey'>Adicionar</button></th>
                                         </tr>
                                     </tfoot>
                                     <tbody>   
@@ -523,7 +524,7 @@
 
     function fillTable(elements){
         for(i = 0; i <= elements.length -1; i++){
-            var newRow = "<tr id='line" + elements[i].productId + "'><td>" + elements[i].name + "</td><td>" + elements[i].price + "</td><td>" + elements[i].categoryId + "</td><td><button id='btnDelete' onclick='deleteProduct(" + elements[i].productId + ")'>Remover</button></td></tr>"
+            var newRow = "<tr id='line" + elements[i].productId + "'><td>" + elements[i].name + "</td><td>" + elements[i].price + "</td><td>" + elements[i].categoryId + "</td><td><button id='btnDelete' class='btn btn-default btnGrey' onclick='deleteProduct(" + elements[i].productId + ")'>Remover</button></td></tr>"
             $("#productTable tbody").append(newRow);
         }
     }

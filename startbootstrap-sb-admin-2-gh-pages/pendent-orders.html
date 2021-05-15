@@ -582,7 +582,7 @@
             newRow += "<td>" + elements[i].totalValue.toFixed(2) + "</td>"
             newRow += "<td>" + elements[i].partialPaidValue.toFixed(2) + "</td>"
             newRow += "<td class='remainingValue'>" + elements[i].remainingValue.toFixed(2) + "</td>"
-            newRow += "<td><button onclick=fecharOrder('" + elements[i].orderHistoryId + "')>Fechar comanda</button></td>"
+            newRow += "<td><button class='btn btn-default btnGrey' onclick=fecharOrder('" + elements[i].orderHistoryId + "')>Fechar comanda</button></td>"
             newRow += "</tr>"
             $("#clientTable tbody").append(newRow);
         }
