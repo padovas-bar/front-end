@@ -536,6 +536,8 @@
                 if(clientName == 'Todos'){
                     $(this).show()
                 }
+
+                refreshTotal()
             });
 
         });
@@ -547,10 +549,12 @@
     function refreshTotal(){
         var total = 0.0
         $( ".remainingValue" ).each(function( index ) {
-            value = $(this).text()
-            total += parseFloat(value)
+            if($(this).parent().css('display') != 'none'){    
+                value = $(this).text()
+                total += parseFloat(value)
+            }
         });
-        $('#total').text(total)
+        $('#total').text(total.toFixed(2))
     }
 
     function getAll(){
@@ -758,6 +762,7 @@
             success: function (data) {
                 getAll()
                 refreshTotal()
+                $("#trustedClients").trigger('change');
             },
             error: function(data){
                 console.log(data)
@@ -783,6 +788,7 @@
             success: function (data) {
                 getAll()
                 refreshTotal()
+                $("#trustedClients").trigger('change');
             },
             error: function(data){
                 console.log(data)
