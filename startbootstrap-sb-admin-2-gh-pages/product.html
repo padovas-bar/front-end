@@ -517,7 +517,7 @@
 
     function fillTable(elements){
         for(i = 0; i <= elements.length -1; i++){
-            var newRow = "<tr id='line" + elements[i].productId + "'><td>" + elements[i].name + "</td><td>" + elements[i].price + "</td><td>" + elements[i].categoryId + "</td><td><button id='btnDelete' class='btn btn-default btnGrey' onclick='deleteProduct(" + elements[i].productId + ")'>Remover</button></td></tr>"
+            var newRow = "<tr id='line" + elements[i].productId + "'><td>" + elements[i].name + "</td><td>" + elements[i].price + "</td><td>" + elements[i].categoryName + "</td><td><button id='btnDelete' class='btn btn-default btnGrey' onclick='deleteProduct(" + elements[i].productId + ")'>Remover</button></td></tr>"
             $("#productTable tbody").append(newRow);
         }
     }
