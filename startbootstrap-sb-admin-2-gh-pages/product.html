@@ -636,6 +636,10 @@
             type: 'delete',
             success: function (data) {  
                 $("#line" + id).remove()            
+            },
+            error: function(data){
+                console.log(data)
+                alert("É necessário remover este produto das comandas abertas antes de prosseguir.")
             }
         });
     }

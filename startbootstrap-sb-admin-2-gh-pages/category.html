@@ -593,6 +593,10 @@
             type: 'delete',
             success: function (data) {  
                 $("#line" + id).remove()            
+            },
+            error: function(data){
+                console.log(data)
+                alert("É necessário remover os produtos associados a esta categoria antes de prosseguir.")
             }
         });
     }
