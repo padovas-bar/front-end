@@ -690,6 +690,25 @@
         $('#btnModal').click()
     }
 
+    function paymentTypeModal(id){
+        closeModal()
+
+        var title = 'Escolha o tipo de pagamento'
+        var body = "Tipo de pagamento: " + buildPaymentTypeSelect()
+        var footer = "<button class='btn btn-default btnGreen' data-dismiss='modal' onclick='totalPayment(" + id + ")'>Pagar!</button>"
+
+        setTimeout(() => { addContentOnModal(title, body, footer)}, 500);
+    }
+
+    function buildPaymentTypeSelect(){
+        return '<select name="paymentType" id="paymentType" class="custom-select custom-select-sm form-control form-control-sm">' +
+               '<option disabled="" selected="" value="">selecione</option>' +
+               '<option value="CASH">Dinheiro</option>' +
+               '<option value="DEBIT_CARD">Cartão de débito</option>' +
+               '<option value="CREDIT_CARD">Cartão de crédito</option>' +
+               '</select>'
+    }
+
     function fecharOrder(id){
         var order = getById(id)
         var partialPayments = getPartialPayment(id)
@@ -702,13 +721,15 @@
 
         var title = 'Fechar comanda: ' + order.name
         var body = buildItemsResume(order.orderItems) + buildPartialPaymentsResume(partialPayments) + buildTotal(order.orderItems, partialPayments)
-        var footer = "<button class='btn btn-default btnYellow' onclick=hang(" + id + ")>Pendurar</button><button class='btn btn-default btnGrey' onclick=partialPayment(" + id + ")>Pagamento parcial</button><button class='btn btn-default btnGreen' data-dismiss='modal' onclick='totalPayment(" + id + ")'>Confirmar pagamento e encerrar comanda</button>"
+        var footer = "<button class='btn btn-default btnYellow' onclick=hang(" + id + ")>Pendurar</button><button class='btn btn-default btnGrey' onclick=partialPayment(" + id + ")>Pagamento parcial</button><button class='btn btn-default btnGreen' data-dismiss='modal' onclick='paymentTypeModal(" + id + ")'>Confirmar pagamento e encerrar comanda</button>"
 
         addContentOnModal(title, body, footer)
     }
 
     function totalPayment(id){
-        closeOrder(id)
+        var paymentType = $('#paymentType').val()
+        
+        closeOrder(id, null, paymentType)
         closeModal()
         setTimeout(() => { $('#divOrder' + id).remove() }, 500);
     }
@@ -862,12 +883,12 @@
         return callback
     }
 
-    function closeOrder(id, trustedClientName){
+    function closeOrder(id, trustedClientName, paymentType){
         var total = $('#total'+id).text()
         $.ajax({
             url: 'http://localhost:8080/order/' + id + '/close',
             type: 'patch',          
-            data: JSON.stringify({ total: total, trustedClientName : trustedClientName }),
+            data: JSON.stringify({ total: total, trustedClientName : trustedClientName, paymentType: paymentType }),
             headers: {
                 "Content-Type": "application/json"
             },
