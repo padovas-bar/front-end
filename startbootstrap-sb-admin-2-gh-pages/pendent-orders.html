@@ -619,7 +619,7 @@
 
         var title = 'Fechar comanda: ' + order.name
         var body = buildItemsResume(order.orderItems) + buildPartialPaymentsResume(partialPayments) + buildTotal(order.orderItems, partialPayments)
-        var footer = "<button class='btn btn-default btnGrey' onclick=partialPayment(" + id + ")>Pagamento parcial</button><button class='btn btn-default btnGreen' data-dismiss='modal' onclick='totalPayment(" + id + ")'>Confirmar pagamento e encerrar comanda</button>"
+        var footer = "<button class='btn btn-default btnGrey' onclick=partialPayment(" + id + ")>Pagamento parcial</button><button class='btn btn-default btnGreen' data-dismiss='modal' onclick='paymentTypeModal(" + id + ")'>Confirmar pagamento e encerrar comanda</button>"
 
         addContentOnModal(title, body, footer)
     }
@@ -722,11 +722,32 @@
         return ('0'+date.getHours()).slice(-2) + ":" + ('0'+date.getMinutes()).slice(-2)
     }
 
+    function paymentTypeModal(id){
+        closeModal()
+
+        var title = 'Escolha o tipo de pagamento'
+        var body = "Tipo de pagamento: " + buildPaymentTypeSelect()
+        var footer = "<button class='btn btn-default btnGreen' data-dismiss='modal' onclick='totalPayment(" + id + ")'>Pagar!</button>"
+
+        setTimeout(() => { addContentOnModal(title, body, footer)}, 500);
+    }
+
+    function buildPaymentTypeSelect(){
+        return '<select name="paymentType" id="paymentType" class="custom-select custom-select-sm form-control form-control-sm">' +
+               '<option disabled="" selected="" value="">selecione</option>' +
+               '<option value="CASH">Dinheiro</option>' +
+               '<option value="DEBIT_CARD">Cartão de débito</option>' +
+               '<option value="CREDIT_CARD">Cartão de crédito</option>' +
+               '</select>'
+    }
+
     function partialPayment(id){
         closeModal()
 
         var title = "Pagamento parcial"
-        var body = "Descrição: <input type='text' placeholder='Descrição...' id='partialPaymentDesc' class='form-control form-control-sm'>" + "Valor: <input type='text' placeholder='0.0' id='partialPaymentValue' class='form-control form-control-sm'>"
+        var body = "Descrição: <input type='text' placeholder='Descrição...' id='partialPaymentDesc' class='form-control form-control-sm'>"
+        + "Valor: <input type='text' placeholder='0.0' id='partialPaymentValue' class='form-control form-control-sm'>"
+        + "Tipo de pagamento: " + buildPaymentTypeSelect()
         var footer = "<button class='btn btn-default btnGreen' onclick='createPartialPayment(" + id + ")'>Confirmar pagamento parcial</button>"
 
         setTimeout(() => {  addContentOnModal(title, body, footer) }, 500);
@@ -735,18 +756,19 @@
     function createPartialPayment(id){
         var desc = $("#partialPaymentDesc").val()
         var value = $("#partialPaymentValue").val()
+        var paymentType = $('#paymentType').val()
         
-        postPartialPayment(id, desc, value)
+        postPartialPayment(id, desc, value, paymentType)
 
         closeModal()
         setTimeout(() => {  fecharOrder(id) }, 500);
     }
 
-    function postPartialPayment(orderHistoryId, desc, value){
+    function postPartialPayment(orderHistoryId, desc, value, paymentType){
         $.ajax({
             url: 'http://localhost:8080/partial-payment/history',
             type: 'post',
-            data: JSON.stringify({ orderHistoryId: orderHistoryId, description: desc, value: value}),
+            data: JSON.stringify({ orderHistoryId: orderHistoryId, description: desc, value: value, paymentType: paymentType}),
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
@@ -765,16 +787,18 @@
     }
 
     function totalPayment(id){
-        closeOrder(id)
+        var paymentType = $('#paymentType').val()
+
+        closeOrder(id, null, paymentType)
         closeModal()
         setTimeout(() => { $('#divOrder' + id).remove() }, 500);
     }
 
-    function closeOrder(id, trustedClientName){
+    function closeOrder(id, trustedClientName, paymentType){
         $.ajax({
             url: 'http://localhost:8080/order/' + id + '/close/history',
             type: 'patch',          
-            data: JSON.stringify({ total: null, trustedClientName: null }),
+            data: JSON.stringify({ total: null, trustedClientName: null, paymentType: paymentType }),
             headers: {
                 "Content-Type": "application/json"
             },

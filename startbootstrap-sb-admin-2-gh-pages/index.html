@@ -738,7 +738,9 @@
         closeModal()
 
         var title = "Pagamento parcial"
-        var body = "Descrição: <input type='text' placeholder='Descrição...' id='partialPaymentDesc' class='form-control form-control-sm'>" + "Valor: <input type='text' placeholder='0.0' id='partialPaymentValue' class='form-control form-control-sm'>"
+        var body = "Descrição: <input type='text' placeholder='Descrição...' id='partialPaymentDesc' class='form-control form-control-sm'>" 
+        + "Valor: <input type='text' placeholder='0.0' id='partialPaymentValue' class='form-control form-control-sm'>"
+        + "Tipo de pagamento: " + buildPaymentTypeSelect()
         var footer = "<button class='btn btn-default btnGreen' onclick='createPartialPayment(" + id + ")'>Confirmar pagamento parcial</button>"
 
         setTimeout(() => {  addContentOnModal(title, body, footer) }, 500);
@@ -747,8 +749,9 @@
     function createPartialPayment(id){
         var desc = $("#partialPaymentDesc").val()
         var value = $("#partialPaymentValue").val()
+        var paymentType = $('#paymentType').val()
         
-        postPartialPayment(id, desc, value)
+        postPartialPayment(id, desc, value, paymentType)
 
         closeModal()
         setTimeout(() => {  fecharOrder(id) }, 500);
@@ -901,11 +904,11 @@
         });
     }
 
-    function postPartialPayment(orderId, desc, value){
+    function postPartialPayment(orderId, desc, value, paymentType){
         $.ajax({
             url: 'http://localhost:8080/partial-payment',
             type: 'post',
-            data: JSON.stringify({ orderId: orderId, description: desc, value: value}),
+            data: JSON.stringify({ orderId: orderId, description: desc, value: value, paymentType: paymentType}),
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
