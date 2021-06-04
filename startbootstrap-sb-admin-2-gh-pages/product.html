@@ -418,6 +418,29 @@
                 </div>
                 <!-- /.container-fluid -->
 
+  <!-- Modal -->
+  <div class="modal fade" id="modal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="modal-title-order">Modal Header</h4>
+          <button type="button" class="close" data-dismiss="modal" id="modal-close">&times;</button>
+        </div>
+        <div class="modal-body" id="modal-body">
+          <p>Some text in the modal.</p>
+        </div>
+        <div class="modal-footer" id="modal-footer">
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- Modal Button -->
+  <button id="btnModal" data-toggle="modal" data-target="#modal" style="display:none;"></button>
+
             </div>
             <!-- End of Main Content -->
 
@@ -485,7 +508,7 @@
 
     $(document).ready(function () {
 
-        getAllCategory()
+        getAllCategory("category")
         getAll()
 
         $(document).on('click', '#btnAdd', function() {
@@ -494,12 +517,75 @@
             product.price = $("#inputAddPrice").val()
             product.categoryId = $("#category").val()
 
-            console.log(product)
-
             create(product)
         });
 
     });
+
+    function closeModal(){
+        $('#modal-close').click()
+    }
+
+    function addContentOnModal(title, body, footer){
+        $('#modal-title-order').text(title)
+        $('#modal-body').html(body)
+        $('#modal-footer').html(footer)
+        $('#btnModal').click()
+    }
+
+    function fillUpdateMotal(id){
+
+        var product = getById(id)
+
+        var title = 'Editar produto: ' + product.name
+        var body = "Nome: <input type='text' id='newName' class='form-control form-control-sm' value=" + product.name + ">" + 
+                    "Preço: <input type='text' id='newPrice' class='form-control form-control-sm' value=" + product.price + ">" +
+                    "Categoria: <select name='category' id='newCategory' class='custom-select custom-select-sm form-control form-control-sm'><option disabled selected value>selecione</option></select></th>"
+        var footer = "<button class='btn btn-default btnGrey' onclick=update(" + id + ")>Editar</button>"
+
+        addContentOnModal(title, body, footer)
+
+        getAllCategory("newCategory")
+        $("#newCategory").val(product.categoryId);
+    }
+
+    function update(id){
+        var name = $('#newName').val()
+        var price = $('#newPrice').val()
+        var category = $('#newCategory').val()
+        $.ajax({
+            url: 'http://localhost:8080/product/' + id,
+            type: 'put',
+            data: JSON.stringify({ name: name, price: price, categoryId: category}),
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                location.reload()               
+            }
+        });
+    }
+
+    function getById(id){
+        var callback
+        $.ajax({
+            url: 'http://localhost:8080/product/' + id,
+            type: 'get',
+            headers: {
+                "Accept": "application/json"
+            },
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                callback = data    
+                console.log(data)            
+            }
+        });
+        return callback
+    }
 
     function getAll(){
         $.ajax({
@@ -517,12 +603,12 @@
 
     function fillTable(elements){
         for(i = 0; i <= elements.length -1; i++){
-            var newRow = "<tr id='line" + elements[i].productId + "'><td>" + elements[i].name + "</td><td>" + elements[i].price + "</td><td>" + elements[i].categoryName + "</td><td><button id='btnDelete' class='btn btn-default btnGrey' onclick='deleteProduct(" + elements[i].productId + ")'>Remover</button></td></tr>"
+            var newRow = "<tr id='line" + elements[i].productId + "'><td>" + elements[i].name + "</td><td>" + elements[i].price + "</td><td>" + elements[i].categoryName + "</td><td><button class='btn btn-default btnGrey' onclick='fillUpdateMotal(" + elements[i].productId + ")' id='btnUpdate'>Editar</button>&nbsp;&nbsp;<button id='btnDelete' class='btn btn-default btnGrey' onclick='deleteProduct(" + elements[i].productId + ")'>Remover</button></td></tr>"
             $("#productTable tbody").append(newRow);
         }
     }
 
-    function getAllCategory(){
+    function getAllCategory(category){
         $.ajax({
             url: 'http://localhost:8080/category',
             type: 'get',
@@ -530,16 +616,17 @@
                 "Accept": "application/json"
         },
             dataType: 'json',
+            async: false,
             success: function (data) {
                 categories = data
-                fillSelect(data)                
+                fillSelect(data, category)          
             }
         });
     }
 
-    function fillSelect(elements){
+    function fillSelect(elements, category){
         for(i = 0; i <= elements.length -1; i++){
-            $("#category").append("<option value=" + elements[i].categoryId + ">" + elements[i].name + "</option>");
+            $("#" + category).append("<option value=" + elements[i].categoryId + ">" + elements[i].name + "</option>");
         }
     }
 
@@ -564,7 +651,7 @@
         },
             dataType: 'json',
             success: function (data) {
-                var newRow = "<tr id='line" + data.productId + "'><td>" + data.name + "</td><td>" + data.price + "</td><td>" + data.categoryId + "</td><td><button id='btnDelete' onclick='deleteProduct(" + data.productId + ")'>Remover</button></td></tr>"
+                var newRow = "<tr id='line" + data.productId + "'><td>" + data.name + "</td><td>" + data.price + "</td><td>" + data.categoryName + "</td><td><button class='btn btn-default btnGrey' onclick='fillUpdateMotal(" + data.productId + ")' id='btnUpdate'>Editar</button>&nbsp;&nbsp;<button id='btnDelete' class='btn btn-default btnGrey' onclick='deleteProduct(" + data.productId + ")'>Remover</button></td></tr>"
                 $("#productTable tbody").append(newRow);
             }
         });

@@ -412,6 +412,30 @@
                 </div>
                 <!-- /.container-fluid -->
 
+  <!-- Modal -->
+  <div class="modal fade" id="modal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="modal-title-order">Modal Header</h4>
+          <button type="button" class="close" data-dismiss="modal" id="modal-close">&times;</button>
+        </div>
+        <div class="modal-body" id="modal-body">
+          <p>Some text in the modal.</p>
+        </div>
+        <div class="modal-footer" id="modal-footer">
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- Modal Button -->
+  <button id="btnModal" data-toggle="modal" data-target="#modal" style="display:none;"></button>
+
+
             </div>
             <!-- End of Main Content -->
 
@@ -485,13 +509,70 @@
 
     });
 
+    function closeModal(){
+        $('#modal-close').click()
+    }
+
+    function addContentOnModal(title, body, footer){
+        $('#modal-title-order').text(title)
+        $('#modal-body').html(body)
+        $('#modal-footer').html(footer)
+        $('#btnModal').click()
+    }
+
+    function fillUpdateMotal(id){
+
+        var category = getById(id)
+
+        var title = 'Editar categoria: ' + category.name
+        var body = "Nome: <input type='text' id='newName' class='form-control form-control-sm' value=" + category.name + ">"
+        var footer = "<button class='btn btn-default btnGrey' onclick=update(" + id + ")>Editar</button>"
+
+        addContentOnModal(title, body, footer)
+    }
+
+    function update(id){
+        var name = $('#newName').val()
+        $.ajax({
+            url: 'http://localhost:8080/category/' + id,
+            type: 'put',
+            data: JSON.stringify({ name: name}),
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                location.reload()               
+            }
+        });
+    }
+
+    function getById(id){
+        var callback
+        $.ajax({
+            url: 'http://localhost:8080/category/' + id,
+            type: 'get',
+            headers: {
+                "Accept": "application/json"
+            },
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                callback = data                
+            }
+        });
+        return callback
+    }
+
     function getAll(){
         $.ajax({
             url: 'http://localhost:8080/category',
             type: 'get',
             headers: {
                 "Accept": "application/json"
-        },
+            },
             dataType: 'json',
             success: function (data) {
                 fillTable(data)                
@@ -501,7 +582,7 @@
 
     function fillTable(elements){
         for(i = 0; i <= elements.length -1; i++){
-            var newRow = "<tr id='line" + elements[i].categoryId + "'><td>" + elements[i].name + "</td><td><button class='btn btn-default btnGrey' onclick='deleteCategory(" + elements[i].categoryId + ")' id='btnDelete'>Remover</button></td></tr>"
+            var newRow = "<tr id='line" + elements[i].categoryId + "'><td>" + elements[i].name + "</td><td><button class='btn btn-default btnGrey' onclick='fillUpdateMotal(" + elements[i].categoryId + ")' id='btnUpdate'>Editar</button>&nbsp;&nbsp;<button class='btn btn-default btnGrey' onclick='deleteCategory(" + elements[i].categoryId + ")' id='btnDelete'>Remover</button></td></tr>"
             $("#categoryTable tbody").append(newRow);
         }
     }
@@ -524,10 +605,10 @@
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
-        },
+            },
             dataType: 'json',
             success: function (data) {
-                var newRow = "<tr id='line" + data.categoryId + "'><td>" + data.name + "</td><td><button onclick='deleteCategory(" + data.categoryId + ")' id='btnDelete'>Remover</button></td></tr>"
+                var newRow = "<tr id='line" + data.categoryId + "'><td>" + data.name + "</td><td><button class='btn btn-default btnGrey' onclick='fillUpdateMotal(" + data.categoryId + ")' id='btnUpdate'>Editar</button>&nbsp;&nbsp;<button class='btn btn-default btnGrey' onclick='deleteCategory(" + data.categoryId + ")' id='btnDelete'>Remover</button></td></tr>"
                 $("#categoryTable tbody").append(newRow);
                 
             }
