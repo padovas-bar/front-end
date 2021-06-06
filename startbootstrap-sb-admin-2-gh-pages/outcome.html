@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Padovas Bar - Gestão de Clientes</title>
+    <title>Padovas Bar - Gestão de Produtos</title>
 
     <!-- Custom fonts for this template -->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -79,9 +79,9 @@
                             <i class="fas fa-fw fa-folder"></i>
                             <span>Cliente confiança</span>
                         </a>
-                        <div id="collapsePages" class="collapse show" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                             <div class="bg-white py-2 collapse-inner rounded">
-                                <a class="collapse-item active" href="client.html">Cliente</a>
+                                <a class="collapse-item" href="client.html">Cliente</a>
                                 <a class="collapse-item" href="pendent-orders.html">Comandas penduradas</a>
                             </div>
                         </div>
@@ -131,7 +131,7 @@
                 </div>
 
                 <!-- Nav Item - Charts -->
-                <li class="nav-item">
+                <li class="nav-item active">
                     <a class="nav-link" href="outcome.html">
                         <i class="fas fa-fw fa-chart-area"></i>
                         <span>Resumo de saídas</span></a>
@@ -385,8 +385,8 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Clientes</h1>
-                    <p class="mb-4">Gestão de clientes.</p>
+                    <h1 class="h3 mb-2 text-gray-800">Produtos</h1>
+                    <p class="mb-4">Gestão de produtos.</p>
 
 
                     <!-- DataTales Example -->
@@ -396,18 +396,22 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered" id="clientTable" width="100%" cellspacing="0">
+                                <table class="table table-bordered" id="productTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
                                             <th>Nome</th>
-                                            <th>Anotações diversas</th>
+                                            <th>Preço</th>
+                                            <th>Categoria</th>
                                             <th>Ação</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         <tr>
-                                            <th><input type="text" placeholder="Novo cliente..." id="inputAddName" class="form-control form-control-sm"></th>
-                                            <th><textarea placeholder="Anotações..." id="inputAddDescription" class="form-control form-control-sm"></textarea></th>
+                                            <th><input type="text" placeholder="Novo produto..." id="inputAddName" class="form-control form-control-sm"></th>
+                                            <th><input type="text" placeholder="0.0" id="inputAddPrice" class="form-control form-control-sm"></th>
+                                            <th><select name="category" id="category" class="custom-select custom-select-sm form-control form-control-sm">
+                                                    <option disabled selected value>selecione</option>
+                                                </select></th>
                                             <th><button id="btnAdd" class='btn btn-default btnGrey'>Adicionar</button></th>
                                         </tr>
                                     </tfoot>
@@ -443,7 +447,6 @@
 
   <!-- Modal Button -->
   <button id="btnModal" data-toggle="modal" data-target="#modal" style="display:none;"></button>
-
 
             </div>
             <!-- End of Main Content -->
@@ -508,18 +511,20 @@
 
     <script>
 
+    var categories;
+
     $(document).ready(function () {
 
+        getAllCategory("category")
         getAll()
 
         $(document).on('click', '#btnAdd', function() {
-            var client = new Object();
-            client.name = $("#inputAddName").val()
-            client.description = $("#inputAddDescription").val()
+            var product = new Object();
+            product.name = $("#inputAddName").val()
+            product.price = $("#inputAddPrice").val()
+            product.categoryId = $("#category").val()
 
-            console.log(client)
-
-            create(client)
+            create(product)
         });
 
     });
@@ -537,23 +542,28 @@
 
     function fillUpdateMotal(id){
 
-        var client = getById(id)
+        var product = getById(id)
 
-        var title = 'Editar cliente: ' + client.name
-        var body = "Nome: <input type='text' id='newName' class='form-control form-control-sm' value=" + client.name + ">" +
-                    "Descrição: <textarea id='newDescription' class='form-control form-control-sm'>" + client.description + "</textarea>"
+        var title = 'Editar produto: ' + product.name
+        var body = "Nome: <input type='text' id='newName' class='form-control form-control-sm' value=" + product.name + ">" + 
+                    "Preço: <input type='text' id='newPrice' class='form-control form-control-sm' value=" + product.price + ">" +
+                    "Categoria: <select name='category' id='newCategory' class='custom-select custom-select-sm form-control form-control-sm'><option disabled selected value>selecione</option></select></th>"
         var footer = "<button class='btn btn-default btnGrey' onclick=update(" + id + ")>Editar</button>"
 
         addContentOnModal(title, body, footer)
+
+        getAllCategory("newCategory")
+        $("#newCategory").val(product.categoryId);
     }
 
     function update(id){
         var name = $('#newName').val()
-        var desc = $('#newDescription').val()
+        var price = $('#newPrice').val()
+        var category = $('#newCategory').val()
         $.ajax({
-            url: 'http://localhost:8080/trusted-client/' + id,
+            url: 'http://localhost:8080/product/' + id,
             type: 'put',
-            data: JSON.stringify({ name: name, description: desc}),
+            data: JSON.stringify({ name: name, price: price, categoryId: category}),
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
@@ -569,7 +579,7 @@
     function getById(id){
         var callback
         $.ajax({
-            url: 'http://localhost:8080/trusted-client/' + id,
+            url: 'http://localhost:8080/product/' + id,
             type: 'get',
             headers: {
                 "Accept": "application/json"
@@ -577,7 +587,8 @@
             dataType: 'json',
             async: false,
             success: function (data) {
-                callback = data                
+                callback = data    
+                console.log(data)            
             }
         });
         return callback
@@ -585,7 +596,7 @@
 
     function getAll(){
         $.ajax({
-            url: 'http://localhost:8080/trusted-client',
+            url: 'http://localhost:8080/product',
             type: 'get',
             headers: {
                 "Accept": "application/json"
@@ -599,35 +610,60 @@
 
     function fillTable(elements){
         for(i = 0; i <= elements.length -1; i++){
-            var newRow = "<tr id='line" + elements[i].trustedClientId + "'><td>" + elements[i].name + "</td><td>" + elements[i].description.replace(/\n/g, "<br>") + "</td><td><button class='btn btn-default btnGrey' onclick='fillUpdateMotal(" + elements[i].trustedClientId + ")' id='btnUpdate'>Editar</button>&nbsp;&nbsp;<button id='btnDelete' class='btn btn-default btnGrey' onclick='deleteClient(" + elements[i].trustedClientId + ")'>Remover</button></td></tr>"
-            $("#clientTable tbody").append(newRow);
+            var newRow = "<tr id='line" + elements[i].productId + "'><td>" + elements[i].name + "</td><td>" + elements[i].price + "</td><td>" + elements[i].categoryName + "</td><td><button class='btn btn-default btnGrey' onclick='fillUpdateMotal(" + elements[i].productId + ")' id='btnUpdate'>Editar</button>&nbsp;&nbsp;<button id='btnDelete' class='btn btn-default btnGrey' onclick='deleteProduct(" + elements[i].productId + ")'>Remover</button></td></tr>"
+            $("#productTable tbody").append(newRow);
         }
     }
 
-    function deleteClient(id){
+    function getAllCategory(category){
         $.ajax({
-            url: 'http://localhost:8080/trusted-client/'+id,
+            url: 'http://localhost:8080/category',
+            type: 'get',
+            headers: {
+                "Accept": "application/json"
+        },
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                categories = data
+                fillSelect(data, category)          
+            }
+        });
+    }
+
+    function fillSelect(elements, category){
+        for(i = 0; i <= elements.length -1; i++){
+            $("#" + category).append("<option value=" + elements[i].categoryId + ">" + elements[i].name + "</option>");
+        }
+    }
+
+    function deleteProduct(id){
+        $.ajax({
+            url: 'http://localhost:8080/product/'+id,
             type: 'delete',
             success: function (data) {  
                 $("#line" + id).remove()            
+            },
+            error: function(data){
+                console.log(data)
+                alert("É necessário remover este produto das comandas abertas antes de prosseguir.")
             }
         });
     }
     
-    function create(client){
+    function create(product){
         $.ajax({
-            url: 'http://localhost:8080/trusted-client',
+            url: 'http://localhost:8080/product',
             type: 'post',
-            data: JSON.stringify(client),
+            data: JSON.stringify(product),
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
         },
             dataType: 'json',
             success: function (data) {
-                console.log(data)
-                var newRow = "<tr id='line" + data.trustedClientId + "'><td>" + data.name + "</td><td>" + data.description.replace(/\n/g, "<br>") + "</td><td><button class='btn btn-default btnGrey' onclick='fillUpdateMotal(" + data.trustedClientId + ")' id='btnUpdate'>Editar</button>&nbsp;&nbsp;<button id='btnDelete' class='btn btn-default btnGrey' onclick='deleteClient(" + data.trustedClientId + ")'>Remover</button></td></tr>"
-                $("#clientTable tbody").append(newRow);
+                var newRow = "<tr id='line" + data.productId + "'><td>" + data.name + "</td><td>" + data.price + "</td><td>" + data.categoryName + "</td><td><button class='btn btn-default btnGrey' onclick='fillUpdateMotal(" + data.productId + ")' id='btnUpdate'>Editar</button>&nbsp;&nbsp;<button id='btnDelete' class='btn btn-default btnGrey' onclick='deleteProduct(" + data.productId + ")'>Remover</button></td></tr>"
+                $("#productTable tbody").append(newRow);
             }
         });
     }
