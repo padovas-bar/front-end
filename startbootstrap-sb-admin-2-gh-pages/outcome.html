@@ -385,14 +385,32 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Produtos</h1>
-                    <p class="mb-4">Gestão de produtos.</p>
+                    <h1 class="h3 mb-2 text-gray-800">Resumo de saídas</h1>
+                    <p class="mb-4">Indicadores de vendas.</p>
 
+                    <!-- Donut Chart -->
+                    <div class="col-xl-4 col-lg-5">
+                        <div class="card shadow mb-4">
+                            <!-- Card Header - Dropdown -->
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Valores</h6>
+                            </div>
+                            <!-- Card Body -->
+                            <div class="card-body">
+                                <div class="chart-pie pt-4">
+                                    <canvas id="myPieChart"></canvas>
+                                </div>
+                                <hr>
+                                Resumo de valores por tipo de pagamento.
+                            </div>
+                        </div>
+                    </div>
 
+                    <p class="mb-4">Relatório de comandas encerradas.</p>
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Listagem</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Comandas encerradas</h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -400,21 +418,11 @@
                                     <thead>
                                         <tr>
                                             <th>Nome</th>
-                                            <th>Preço</th>
-                                            <th>Categoria</th>
-                                            <th>Ação</th>
+                                            <th>Data</th>
+                                            <th>Valor</th>
+                                            <th>Forma de pagamento</th>
                                         </tr>
                                     </thead>
-                                    <tfoot>
-                                        <tr>
-                                            <th><input type="text" placeholder="Novo produto..." id="inputAddName" class="form-control form-control-sm"></th>
-                                            <th><input type="text" placeholder="0.0" id="inputAddPrice" class="form-control form-control-sm"></th>
-                                            <th><select name="category" id="category" class="custom-select custom-select-sm form-control form-control-sm">
-                                                    <option disabled selected value>selecione</option>
-                                                </select></th>
-                                            <th><button id="btnAdd" class='btn btn-default btnGrey'>Adicionar</button></th>
-                                        </tr>
-                                    </tfoot>
                                     <tbody>   
                                     </tbody>
                                 </table>
@@ -509,98 +517,78 @@
     <!-- Page level custom scripts -->
     <script src="js/demo/datatables-demo.js"></script>
 
-    <script>
+    <!-- Page level plugins -->
+    <script src="vendor/chart.js/Chart.min.js"></script>
 
-    var categories;
+    <script>
 
     $(document).ready(function () {
 
-        getAllCategory("category")
-        getAll()
-
-        $(document).on('click', '#btnAdd', function() {
-            var product = new Object();
-            product.name = $("#inputAddName").val()
-            product.price = $("#inputAddPrice").val()
-            product.categoryId = $("#category").val()
-
-            create(product)
-        });
+        getOutcome(0)
+        getValueSummarized(0)
 
     });
 
-    function closeModal(){
-        $('#modal-close').click()
-    }
+    function setPieChartValues(cash, debitCard, creditCard){
+        // Set new default font family and font color to mimic Bootstrap's default styling
+        Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+        Chart.defaults.global.defaultFontColor = '#858796';
 
-    function addContentOnModal(title, body, footer){
-        $('#modal-title-order').text(title)
-        $('#modal-body').html(body)
-        $('#modal-footer').html(footer)
-        $('#btnModal').click()
-    }
-
-    function fillUpdateMotal(id){
-
-        var product = getById(id)
-
-        var title = 'Editar produto: ' + product.name
-        var body = "Nome: <input type='text' id='newName' class='form-control form-control-sm' value=" + product.name + ">" + 
-                    "Preço: <input type='text' id='newPrice' class='form-control form-control-sm' value=" + product.price + ">" +
-                    "Categoria: <select name='category' id='newCategory' class='custom-select custom-select-sm form-control form-control-sm'><option disabled selected value>selecione</option></select></th>"
-        var footer = "<button class='btn btn-default btnGrey' onclick=update(" + id + ")>Editar</button>"
-
-        addContentOnModal(title, body, footer)
-
-        getAllCategory("newCategory")
-        $("#newCategory").val(product.categoryId);
-    }
-
-    function update(id){
-        var name = $('#newName').val()
-        var price = $('#newPrice').val()
-        var category = $('#newCategory').val()
-        $.ajax({
-            url: 'http://localhost:8080/product/' + id,
-            type: 'put',
-            data: JSON.stringify({ name: name, price: price, categoryId: category}),
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            dataType: 'json',
-            async: false,
-            success: function (data) {
-                location.reload()               
-            }
-        });
-    }
-
-    function getById(id){
-        var callback
-        $.ajax({
-            url: 'http://localhost:8080/product/' + id,
-            type: 'get',
-            headers: {
-                "Accept": "application/json"
-            },
-            dataType: 'json',
-            async: false,
-            success: function (data) {
-                callback = data    
-                console.log(data)            
-            }
-        });
-        return callback
-    }
-
-    function getAll(){
-        $.ajax({
-            url: 'http://localhost:8080/product',
-            type: 'get',
-            headers: {
-                "Accept": "application/json"
+        // Pie Chart Example
+        var ctx = document.getElementById("myPieChart");
+        var myPieChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ["Cartão de débito", "Dinheiro", "Cartão de crédito"],
+            datasets: [{
+            data: [debitCard, cash, creditCard],
+            backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
+            hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
+            hoverBorderColor: "rgba(234, 236, 244, 1)",
+            }],
         },
+        options: {
+            maintainAspectRatio: false,
+            tooltips: {
+            backgroundColor: "rgb(255,255,255)",
+            bodyFontColor: "#858796",
+            borderColor: '#dddfeb',
+            borderWidth: 1,
+            xPadding: 15,
+            yPadding: 15,
+            displayColors: false,
+            caretPadding: 10,
+            },
+            legend: {
+            display: false
+            },
+            cutoutPercentage: 80,
+        },
+        });
+    }
+
+    function getValueSummarized(since){
+        $.ajax({
+            url: 'http://localhost:8080/report/value-summarized?since=' + since,
+            type: 'get',
+            headers: {
+                "Accept": "application/json"
+            },
+            dataType: 'json',
+            success: function (data) {
+                console.log(data)
+                setPieChartValues(data.cash, data.debitCard, data.creditCard)               
+            }
+        });
+    }
+
+    function getOutcome(since){
+        $.ajax({
+            url: 'http://localhost:8080/report/outcome?since=' + since,
+            type: 'get',
+            headers: {
+                "Accept": "application/json"
+            },
             dataType: 'json',
             success: function (data) {
                 fillTable(data)                
@@ -610,64 +598,10 @@
 
     function fillTable(elements){
         for(i = 0; i <= elements.length -1; i++){
-            var newRow = "<tr id='line" + elements[i].productId + "'><td>" + elements[i].name + "</td><td>" + elements[i].price + "</td><td>" + elements[i].categoryName + "</td><td><button class='btn btn-default btnGrey' onclick='fillUpdateMotal(" + elements[i].productId + ")' id='btnUpdate'>Editar</button>&nbsp;&nbsp;<button id='btnDelete' class='btn btn-default btnGrey' onclick='deleteProduct(" + elements[i].productId + ")'>Remover</button></td></tr>"
+            var newRow = "<tr id='line" + elements[i].orderHistoryId + "'><td>" + elements[i].name + "</td><td>" + elements[i].statusChangedAt + "</td><td>" + elements[i].totalValue + "</td><td>" + elements[i].paymentType + "</td></tr>"
             $("#productTable tbody").append(newRow);
         }
     }
-
-    function getAllCategory(category){
-        $.ajax({
-            url: 'http://localhost:8080/category',
-            type: 'get',
-            headers: {
-                "Accept": "application/json"
-        },
-            dataType: 'json',
-            async: false,
-            success: function (data) {
-                categories = data
-                fillSelect(data, category)          
-            }
-        });
-    }
-
-    function fillSelect(elements, category){
-        for(i = 0; i <= elements.length -1; i++){
-            $("#" + category).append("<option value=" + elements[i].categoryId + ">" + elements[i].name + "</option>");
-        }
-    }
-
-    function deleteProduct(id){
-        $.ajax({
-            url: 'http://localhost:8080/product/'+id,
-            type: 'delete',
-            success: function (data) {  
-                $("#line" + id).remove()            
-            },
-            error: function(data){
-                console.log(data)
-                alert("É necessário remover este produto das comandas abertas antes de prosseguir.")
-            }
-        });
-    }
-    
-    function create(product){
-        $.ajax({
-            url: 'http://localhost:8080/product',
-            type: 'post',
-            data: JSON.stringify(product),
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-        },
-            dataType: 'json',
-            success: function (data) {
-                var newRow = "<tr id='line" + data.productId + "'><td>" + data.name + "</td><td>" + data.price + "</td><td>" + data.categoryName + "</td><td><button class='btn btn-default btnGrey' onclick='fillUpdateMotal(" + data.productId + ")' id='btnUpdate'>Editar</button>&nbsp;&nbsp;<button id='btnDelete' class='btn btn-default btnGrey' onclick='deleteProduct(" + data.productId + ")'>Remover</button></td></tr>"
-                $("#productTable tbody").append(newRow);
-            }
-        });
-    }
-
     
     </script>
 
