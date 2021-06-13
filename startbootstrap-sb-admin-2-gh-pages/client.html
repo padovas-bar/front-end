@@ -552,8 +552,16 @@
 
     function fillTable(elements){
         for(i = 0; i <= elements.length -1; i++){
-            var newRow = "<tr id='line" + elements[i].trustedClientId + "'><td>" + elements[i].name + "</td><td>" + elements[i].description.replace(/\n/g, "<br>") + "</td><td><button class='btn btn-default btnGrey' onclick='fillUpdateMotal(" + elements[i].trustedClientId + ")' id='btnUpdate'>Editar</button>&nbsp;&nbsp;<button id='btnDelete' class='btn btn-default btnGrey' onclick='deleteClient(" + elements[i].trustedClientId + ")'>Remover</button></td></tr>"
+            var newRow = "<tr id='line" + elements[i].trustedClientId + "'><td>" + elements[i].name + "</td><td>" + formatBr(elements[i].description) + "</td><td><button class='btn btn-default btnGrey' onclick='fillUpdateMotal(" + elements[i].trustedClientId + ")' id='btnUpdate'>Editar</button>&nbsp;&nbsp;<button id='btnDelete' class='btn btn-default btnGrey' onclick='deleteClient(" + elements[i].trustedClientId + ")'>Remover</button></td></tr>"
             $("#clientTable tbody").append(newRow);
+        }
+    }
+
+    function formatBr(string){
+        if(string != null){
+            return string.replace(/\n/g, "<br>")
+        } else{
+            return ""
         }
     }
 
