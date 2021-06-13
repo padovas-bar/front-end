@@ -385,8 +385,16 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Resumo de saídas</h1>
-                    <p class="mb-4">Indicadores de vendas.</p>
+                    <h1 class="h3 mb-2 text-gray-800">Resumo de pagamentos</h1>
+                    <p class="mb-4">Indicadores de vendas.
+
+                    Desde: 
+                    <select name="days" id="days" style="width: 100px;" class="custom-select custom-select-sm form-control form-control-sm">
+                        <option value="0" selected>Hoje</option>
+                        <option value="1">Ontem</option>
+                        <option value="7">7 dias</option>
+                        <option value="30">30 dias</option>
+                    </select></p>
 
                     <div class="row">
 
@@ -479,15 +487,15 @@
                         </div>
                     </div>
 
-                    <p class="mb-4">Relatório de comandas encerradas.</p>
+                    <p class="mb-4">Relatório de pagamentos.</p>
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Comandas encerradas</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Pagamentos parciais e totais de comandas </h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered" id="productTable" width="100%" cellspacing="0">
+                                <table class="table table-bordered" id="paymentsTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
                                             <th>Nome</th>
@@ -600,6 +608,17 @@
         getOutcome(0)
         getValueSummarized(0)
 
+        $(document).on('change', '#days', function() {
+            var day = $(this).val()
+
+            $("#paymentsTable tbody tr").remove(); 
+
+            getOutcome(day)
+            getValueSummarized(day)
+
+
+        });
+
     });
 
     function setPieChartValues(cash, debitCard, creditCard){
@@ -615,8 +634,8 @@
             labels: ["Cartão de débito", "Dinheiro", "Cartão de crédito"],
             datasets: [{
             data: [debitCard, cash, creditCard],
-            backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
-            hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
+            backgroundColor: ['#36b9cc', '#4e73df', '#f6c23e'],
+            hoverBackgroundColor: ['#237f8c ', '#3a57ab', '#a88428'], 
             hoverBorderColor: "rgba(234, 236, 244, 1)",
             }],
         },
@@ -677,7 +696,7 @@
     function fillTable(elements){
         for(i = 0; i <= elements.length -1; i++){
             var newRow = "<tr id='line" + elements[i].orderHistoryId + "'><td>" + elements[i].name + "</td><td>" + elements[i].statusChangedAt + "</td><td>" + elements[i].totalValue + "</td><td>" + elements[i].paymentType + "</td></tr>"
-            $("#productTable tbody").append(newRow);
+            $("#paymentsTable tbody").append(newRow);
         }
     }
     
