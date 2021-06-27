@@ -422,6 +422,8 @@
 
                     </div>
 
+                <div class="row">
+
                     <!-- Donut Chart -->
                     <div class="col-xl-4 col-lg-5">
                         <div class="card shadow mb-4">
@@ -437,11 +439,28 @@
                                 <hr>
                                 Resumo de valores por tipo de pagamento.
                             </div>
-                        </div>
+                        </div>                    
                     </div>
 
                     <!-- Bar Chart -->
-                    <canvas id="bar-chart" width="800" height="450"></canvas>
+                    <div class="col-xl-8 col-lg-7">
+                        <div class="card shadow mb-4">
+                            <!-- Card Header - Dropdown -->
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Pagamento por dia</h6>
+                            </div>
+                            <!-- Card Body -->
+                            <div class="card-body">
+                                <div id="chart-bar" class="chart-pie pt-4">
+                                    <canvas id="bar-chart" width="300" height="70"></canvas>
+                                </div>
+                                <hr>
+                                Resumo de pagamento por dia.
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
 
                     <p class="mb-4">Relatório de pagamentos.</p>
                     <!-- DataTales Example -->
@@ -616,7 +635,10 @@
         });
     }
 
-    function setBarChart(day, value){
+    function setBarChart(day, value, color){
+
+        $("#chart-bar").html('<canvas id="bar-chart" width="300" height="70"></canvas>')
+
         new Chart(document.getElementById("bar-chart"), {
             type: 'bar',
             data: {
@@ -624,17 +646,26 @@
             datasets: [
                 {
                 label: "Valor em reais",
-                backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+                backgroundColor: color,
                 data: value
                 }
             ]
             },
             options: {
-            legend: { display: false },
-            title: {
-                display: true,
-                text: 'Total por dia'
-            }
+                legend: { display: false },
+                title: {
+                    display: true,
+                    text: 'Total por dia'
+                },
+                scales: {
+                    yAxes: [
+                        {
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }
+                    ]
+                }
             }
         });
     }
@@ -651,16 +682,15 @@
                 
                 var day = []
                 var value = []
+                var color = []
                 
                 for(i = 0; i <= data.length -1; i++){
                     day.push(data[i].day)
                     value.push(data[i].value)
+                    color.push(randomColor())
                 }
 
-                console.log(day)
-                console.log(value)
-                
-                setBarChart(day, value)                
+                setBarChart(day, value, color)             
             }
         });
     }
@@ -675,7 +705,6 @@
             },
             dataType: 'json',
             success: function (data) {
-                console.log(data)
                 setPieChartValues(data.cash, data.debitCard, data.creditCard)
                 
                 $("#total").text("R$ " + data.total);
@@ -705,6 +734,10 @@
             var newRow = "<tr id='line" + elements[i].orderHistoryId + "'><td>" + elements[i].name + "</td><td>" + elements[i].statusChangedAt + "</td><td>" + elements[i].totalValue + "</td><td>" + elements[i].paymentType + "</td></tr>"
             $("#paymentsTable tbody").append(newRow);
         }
+    }
+
+    function randomColor(){
+        return "#" + Math.floor(Math.random()*16777215).toString(16)
     }
     
     </script>
