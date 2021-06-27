@@ -440,6 +440,9 @@
                         </div>
                     </div>
 
+                    <!-- Bar Chart -->
+                    <canvas id="bar-chart" width="800" height="450"></canvas>
+
                     <p class="mb-4">Relatório de pagamentos.</p>
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
@@ -560,6 +563,7 @@
 
         getOutcome(0)
         getValueSummarized(0)
+        getTotalPerDay(0)
 
         $(document).on('change', '#days', function() {
             var day = $(this).val()
@@ -568,7 +572,7 @@
 
             getOutcome(day)
             getValueSummarized(day)
-
+            getTotalPerDay(day)
 
         });
 
@@ -611,6 +615,56 @@
         },
         });
     }
+
+    function setBarChart(day, value){
+        new Chart(document.getElementById("bar-chart"), {
+            type: 'bar',
+            data: {
+            labels: day,
+            datasets: [
+                {
+                label: "Valor em reais",
+                backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+                data: value
+                }
+            ]
+            },
+            options: {
+            legend: { display: false },
+            title: {
+                display: true,
+                text: 'Total por dia'
+            }
+            }
+        });
+    }
+
+    function getTotalPerDay(since){
+        $.ajax({
+            url: 'http://localhost:8080/report/total-per-day?since=' + since,
+            type: 'get',
+            headers: {
+                "Accept": "application/json"
+            },
+            dataType: 'json',
+            success: function (data) {
+                
+                var day = []
+                var value = []
+                
+                for(i = 0; i <= data.length -1; i++){
+                    day.push(data[i].day)
+                    value.push(data[i].value)
+                }
+
+                console.log(day)
+                console.log(value)
+                
+                setBarChart(day, value)                
+            }
+        });
+    }
+
 
     function getValueSummarized(since){
         $.ajax({
