@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Padovas Bar - Gestão de Comandas Penduradas</title>
+    <title>Padovas Bar - Gestão de Produtos</title>
 
     <!-- Custom fonts for this template -->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -79,10 +79,10 @@
                             <i class="fas fa-fw fa-folder"></i>
                             <span>Cliente confiança</span>
                         </a>
-                        <div id="collapsePages" class="collapse show" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                             <div class="bg-white py-2 collapse-inner rounded">
                                 <a class="collapse-item" href="client.html">Cliente</a>
-                                <a class="collapse-item active" href="pendent-orders.html">Comandas penduradas</a>
+                                <a class="collapse-item" href="pendent-orders.html">Comandas penduradas</a>
                             </div>
                         </div>
                 </li>
@@ -103,7 +103,7 @@
                         <span>Resumo de saídas</span></a>
                 </li>
 
-                <li class="nav-item">
+                <li class="nav-item active">
                     <a class="nav-link" href="inventory.html">
                         <i class="fas fa-fw fa-chart-area"></i>
                         <span>Controle de estoque</span></a>
@@ -344,40 +344,36 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Comandas penduradas</h1>
-                    <p class="mb-4">Gestão de comandas penduradas.</p>
+                    <h1 class="h3 mb-2 text-gray-800">Resumo de pagamentos</h1>
+                    <p class="mb-4">Indicadores de estoque.
 
+                    Desde: 
+                    <select name="days" id="days" style="width: 100px;" class="custom-select custom-select-sm form-control form-control-sm">
+                        <option value="0" selected>Hoje</option>
+                        <option value="1">Ontem</option>
+                        <option value="7">7 dias</option>
+                        <option value="30">30 dias</option>
+                    </select></p>
 
+                    
+
+                    <p class="mb-4">Relatório de estoque.</p>
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Listagem</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Produtos vendidos</h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered" id="clientTable" width="100%" cellspacing="0">
+                                <table class="table table-bordered" id="inventoryTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>Cliente</th>
-                                            <th>Comanda</th>
+                                            <th>Nome</th>
                                             <th>Data</th>
-                                            <th>Valor Total</th>
-                                            <th>Valor Pago</th>
-                                            <th>Valor Restante</th>
-                                            <th>Ação</th>
+                                            <th>Quantidade</th>
+                                            <th>Valor</th>
                                         </tr>
                                     </thead>
-                                    <tfoot>
-                                        <tr>
-                                            <th id="trustedClientsTd"></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th id="total"></th>
-                                            <th></th>
-                                        </tr>
-                                    </tfoot>
                                     <tbody>   
                                     </tbody>
                                 </table>
@@ -388,28 +384,28 @@
                 </div>
                 <!-- /.container-fluid -->
 
-        <!-- Modal -->
-        <div class="modal fade" id="modal" role="dialog">
-            <div class="modal-dialog">
-            
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                <h4 class="modal-title" id="modal-title-order">Modal Header</h4>
-                <button type="button" class="close" data-dismiss="modal" id="modal-close">&times;</button>
-                </div>
-                <div class="modal-body" id="modal-body">
-                <p>Some text in the modal.</p>
-                </div>
-                <div class="modal-footer" id="modal-footer">
-                </div>
-            </div>
-            
-            </div>
-         </div>
+  <!-- Modal -->
+  <div class="modal fade" id="modal" role="dialog">
+    <div class="modal-dialog">
     
-      <!-- Modal Button -->
-      <button id="btnModal" data-toggle="modal" data-target="#modal" style="display:none;"></button>
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="modal-title-order">Modal Header</h4>
+          <button type="button" class="close" data-dismiss="modal" id="modal-close">&times;</button>
+        </div>
+        <div class="modal-body" id="modal-body">
+          <p>Some text in the modal.</p>
+        </div>
+        <div class="modal-footer" id="modal-footer">
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- Modal Button -->
+  <button id="btnModal" data-toggle="modal" data-target="#modal" style="display:none;"></button>
 
             </div>
             <!-- End of Main Content -->
@@ -418,7 +414,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Padovas Bar 2021</span>
+                        <span>Copyright &copy; Your Website 2020</span>
                     </div>
                 </div>
             </footer>
@@ -472,59 +468,33 @@
     <!-- Page level custom scripts -->
     <script src="js/demo/datatables-demo.js"></script>
 
+    <!-- Page level plugins -->
+    <script src="vendor/chart.js/Chart.min.js"></script>
+
     <script>
 
     $(document).ready(function () {
 
-        getAll()
-        refreshTotal()
-        loadTrustedClients()
+        getInventory(0)
+        
+        $(document).on('change', '#days', function() {
+            var day = $(this).val()
 
-        $(document).on('change', '#trustedClients', function() {
-            var clientName = $("option:selected", this).text()
+            $("#inventoryTable tbody tr").remove(); 
 
-            $( ".tblLine" ).each(function( index ) {
-                name = $(this).find("td").first().text()
-                
-                if(clientName == name){
-                    $(this).show()
-                } else{
-                    $(this).hide()
-                }
-
-                if(clientName == 'Todos'){
-                    $(this).show()
-                }
-
-                refreshTotal()
-            });
-
+            getInventory(day)
         });
-
-
 
     });
 
-    function refreshTotal(){
-        var total = 0.0
-        $( ".remainingValue" ).each(function( index ) {
-            if($(this).parent().css('display') != 'none'){    
-                value = $(this).text()
-                total += parseFloat(value)
-            }
-        });
-        $('#total').text(total.toFixed(2))
-    }
-
-    function getAll(){
+    function getInventory(since){
         $.ajax({
-            url: 'http://localhost:8080/order/pendent',
+            url: 'http://localhost:8080/report/inventory?since=' + since,
             type: 'get',
             headers: {
                 "Accept": "application/json"
-        },
+            },
             dataType: 'json',
-            async: false,
             success: function (data) {
                 fillTable(data)                
             }
@@ -532,257 +502,12 @@
     }
 
     function fillTable(elements){
-        $('.tblLine').remove();
         for(i = 0; i <= elements.length -1; i++){
-            var newRow = "<tr id='" + elements[i].orderHistoryId + "' class='tblLine'>"
-            newRow += "<td>" + elements[i].pendentOwner + "</td>"
-            newRow += "<td>" + elements[i].name + "</td>"
-            newRow += "<td>" + elements[i].statusChangedAt + "</td>"
-            newRow += "<td>" + elements[i].totalValue.toFixed(2) + "</td>"
-            newRow += "<td>" + elements[i].partialPaidValue.toFixed(2) + "</td>"
-            newRow += "<td class='remainingValue'>" + elements[i].remainingValue.toFixed(2) + "</td>"
-            newRow += "<td><button class='btn btn-default btnGrey' onclick=fecharOrder('" + elements[i].orderHistoryId + "')>Fechar comanda</button></td>"
-            newRow += "</tr>"
-            $("#clientTable tbody").append(newRow);
+            var newRow = "<tr id='line" + elements[i].orderItemHistoryId + "'><td>" + elements[i].name + "</td><td>" + elements[i].itemOrderedAt + "</td><td>" + elements[i].quantity + "</td><td>" + elements[i].price + "</td></tr>"
+            $("#inventoryTable tbody").append(newRow);
         }
     }
 
-
-    function loadTrustedClients(){
-        var clients = getTrustedClients()
-
-        var clientsOptions = "<select id='trustedClients' class='custom-select custom-select-sm form-control form-control-sm'><option selected='' value=''>Todos</option>"
-        for(i = 0; i <= clients.length -1; i++){
-            clientsOptions += '<option value="' + clients[i].trustedClientId + '">' + clients[i].name + '</option>'
-        }
-        clientsOptions += "</select>"
-
-        $('#trustedClientsTd').html(clientsOptions)
-    }
-
-    function getTrustedClients(){
-        var callback
-        $.ajax({
-            url: 'http://localhost:8080/trusted-client/',
-            type: 'get',
-            headers: {
-                "Accept": "application/json"
-            },
-            dataType: 'json',
-            async: false,
-            success: function (data) {
-                callback = data
-            }
-        });
-        return callback
-    }
-
-    //Daqui p baixo Copia do index p montar o botao de fechar comanda
-
-    function fecharOrder(id){
-        var order = getById(id)
-        var partialPayments = getPartialPayment(id)
-
-        var title = 'Fechar comanda: ' + order.name
-        var body = buildItemsResume(order.orderItems) + buildPartialPaymentsResume(partialPayments) + buildTotal(order.orderItems, partialPayments)
-        var footer = "<button class='btn btn-default btnGrey' onclick=partialPayment(" + id + ")>Pagamento parcial</button><button class='btn btn-default btnGreen' data-dismiss='modal' onclick='paymentTypeModal(" + id + ")'>Confirmar pagamento e encerrar comanda</button>"
-
-        addContentOnModal(title, body, footer)
-    }
-
-    function getById(id){
-        var callback
-        $.ajax({
-            url: 'http://localhost:8080/order/history/' + id,
-            type: 'get',
-            headers: {
-                "Accept": "application/json"
-            },
-            dataType: 'json',
-            async: false,
-            success: function (data) {
-                callback = data
-            }
-        });
-        return callback
-    }
-
-    function getPartialPayment(id){
-        var callback
-        $.ajax({
-            url: 'http://localhost:8080/partial-payment/history/' + id,
-            type: 'get',
-            headers: {
-                "Accept": "application/json"
-            },
-            dataType: 'json',
-            async: false,
-            success: function (data) {
-                callback = data
-            }
-        });
-        return callback
-    }
-
-    function buildItemsResume(items){
-        var body = "<table id='orderItemsResume'><thead><tr><th width='160px'>Produto</th><th width='60px'>Qtd</th><th width='66px'>R$</th><th>Hora</th></tr></thead>"
-        for(i = 0; i <= items.length -1; i++){
-            body += "<tr>"
-            body += "<td>" + items[i].productName + "</td>"
-            body += "<td>" + items[i].quantity + "</td>"
-            body += "<td>" + items[i].productPrice * items[i].quantity + "</td>"
-            body += "<td>" + formatTime(items[i].itemOrderedAt) + "</td>"
-            body += "</tr>"
-        }
-        body += "</table>"
-        return body
-    }
-
-    function buildPartialPaymentsResume(partialPayments){
-        if(partialPayments.length > 0){
-            var body = "<br><table id='orderPartialPaymentsResume'><thead><tr><th width='160px'>Pagamento Parcial</th><th width='60px'></th><th width='66px'>R$</th><th>Hora</th></tr></thead>"
-            for(i = 0; i <= partialPayments.length -1; i++){
-                body += "<tr>"
-                body += "<td>" + partialPayments[i].description + "</td>"
-                body += "<td></td>"
-                body += "<td>" + partialPayments[i].value + "</td>"
-                body += "<td>" + formatTime(partialPayments[i].paidAt) + "</td>"
-                body += "</tr>"
-            }
-            body += "</table>"
-            return body
-        } else{
-            return ""
-        }
-    }
-
-    function buildTotal(items, partialPayments){
-        var valItems = 0
-        var valPartialPayments = 0
-
-        for (i = 0; i <= items.length -1; i++){
-            valItems += items[i].productPrice * items[i].quantity
-
-        }
-
-        for (i = 0; i <= partialPayments.length -1; i++){
-            valPartialPayments += partialPayments[i].value
-        }
-
-        var total = (valItems - valPartialPayments).toFixed(2)
-
-        var body = "<br><table><thead><tr><th width='160px'>Total:</th><th width='60px'></th><th width='66px' id='resumeTotal'>" + total + "</th><th></th></tr></thead></table>"
-
-        return body
-    }
-
-    function addContentOnModal(title, body, footer){
-        $('#modal-title-order').text(title)
-        $('#modal-body').html(body)
-        $('#modal-footer').html(footer)
-        $('#btnModal').click()
-    }
-
-    function formatTime(time){
-        var date = new Date(time)
-        return ('0'+date.getHours()).slice(-2) + ":" + ('0'+date.getMinutes()).slice(-2)
-    }
-
-    function paymentTypeModal(id){
-        closeModal()
-
-        var title = 'Escolha o tipo de pagamento'
-        var body = "Tipo de pagamento: " + buildPaymentTypeSelect()
-        var footer = "<button class='btn btn-default btnGreen' data-dismiss='modal' onclick='totalPayment(" + id + ")'>Pagar!</button>"
-
-        setTimeout(() => { addContentOnModal(title, body, footer)}, 500);
-    }
-
-    function buildPaymentTypeSelect(){
-        return '<select name="paymentType" id="paymentType" class="custom-select custom-select-sm form-control form-control-sm">' +
-               '<option disabled="" selected="" value="">selecione</option>' +
-               '<option value="CASH">Dinheiro</option>' +
-               '<option value="DEBIT_CARD">Cartão de débito</option>' +
-               '<option value="CREDIT_CARD">Cartão de crédito</option>' +
-               '</select>'
-    }
-
-    function partialPayment(id){
-        closeModal()
-
-        var title = "Pagamento parcial"
-        var body = "Descrição: <input type='text' placeholder='Descrição...' id='partialPaymentDesc' class='form-control form-control-sm'>"
-        + "Valor: <input type='text' placeholder='0.0' id='partialPaymentValue' class='form-control form-control-sm'>"
-        + "Tipo de pagamento: " + buildPaymentTypeSelect()
-        var footer = "<button class='btn btn-default btnGreen' onclick='createPartialPayment(" + id + ")'>Confirmar pagamento parcial</button>"
-
-        setTimeout(() => {  addContentOnModal(title, body, footer) }, 500);
-    }
-
-    function createPartialPayment(id){
-        var desc = $("#partialPaymentDesc").val()
-        var value = $("#partialPaymentValue").val()
-        var paymentType = $('#paymentType').val()
-        
-        postPartialPayment(id, desc, value, paymentType)
-
-        closeModal()
-        setTimeout(() => {  fecharOrder(id) }, 500);
-    }
-
-    function postPartialPayment(orderHistoryId, desc, value, paymentType){
-        $.ajax({
-            url: 'http://localhost:8080/partial-payment/history',
-            type: 'post',
-            data: JSON.stringify({ orderHistoryId: orderHistoryId, description: desc, value: value, paymentType: paymentType}),
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            dataType: 'json',
-            success: function (data) {
-                getAll()
-                refreshTotal()
-                $("#trustedClients").trigger('change');
-            },
-            error: function(data){
-                console.log(data)
-                alert("Erro de conexão com o servidor. Esta alteração não foi salva. Contate o administrador.")
-            }
-        });
-    }
-
-    function totalPayment(id){
-        var paymentType = $('#paymentType').val()
-
-        closeOrder(id, null, paymentType)
-        closeModal()
-        setTimeout(() => { $('#divOrder' + id).remove() }, 500);
-    }
-
-    function closeOrder(id, trustedClientName, paymentType){
-        $.ajax({
-            url: 'http://localhost:8080/order/' + id + '/close/history',
-            type: 'patch',          
-            data: JSON.stringify({ total: null, trustedClientName: null, paymentType: paymentType }),
-            headers: {
-                "Content-Type": "application/json"
-            },
-            success: function (data) {
-                getAll()
-                refreshTotal()
-                $("#trustedClients").trigger('change');
-            },
-            error: function(data){
-                console.log(data)
-                alert("Erro de conexão com o servidor. Esta alteração não foi salva. Contate o administrador.")
-            }
-        });
-    }
-
-    function closeModal(){
-        $('#modal-close').click()
-    }
     
     </script>
 
