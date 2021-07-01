@@ -355,6 +355,52 @@
                         <option value="30">30 dias</option>
                     </select></p>
 
+
+                    <p class="mb-4">Top 10 saída de produtos</p>
+                    <div class="row">
+
+                    <!-- DataTales Example -->
+                    <div class="col-xl-4 col-lg-5">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Produtos vendidos</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="rankTable" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>Nome</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>   
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pie Chart -->
+                    <div class="col-xl-4 col-lg-5">
+                        <div class="card shadow mb-4">
+                            <!-- Card Header - Dropdown -->
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Quantidade de produtos vendidos</h6>
+                            </div>
+                            <!-- Card Body -->
+                            <div class="card-body">
+                                <div class="chart-pie pt-4">
+                                    <canvas id="pie-chart" width="800" height="400"></canvas>
+                                </div>
+                                <hr>
+                                Resumo de quantidade de produtos.
+                            </div>
+                        </div>                    
+                    </div>
+
+                </div>
                     
 
                     <p class="mb-4">Relatório de estoque.</p>
@@ -476,16 +522,73 @@
     $(document).ready(function () {
 
         getInventory(0)
+        getRank(0)
         
         $(document).on('change', '#days', function() {
             var day = $(this).val()
 
             $("#inventoryTable tbody tr").remove(); 
+            $("#rankTable tbody tr").remove(); 
 
             getInventory(day)
+            getRank(day)
         });
 
     });
+
+    function setPieChart(name, total, color){
+        console.log(name, total, color)
+        new Chart(document.getElementById("pie-chart"), {
+            type: 'pie',
+            data: {
+            labels: name,
+            datasets: [{
+                label: "Population (millions)",
+                backgroundColor: color,
+                data: total
+            }]
+            },
+            options: {
+            title: {
+                display: true,
+                text: 'Predicted world population (millions) in 2050'
+            }
+            }
+        });
+    }
+
+    function getRank(since){
+        $.ajax({
+            url: 'http://localhost:8080/report/inventory/product-rank?since=' + since,
+            type: 'get',
+            headers: {
+                "Accept": "application/json"
+            },
+            dataType: 'json',
+            success: function (data) {
+                fillRankTable(data)
+
+                var name = []
+                var total = []
+                var color = []
+                
+                for(i = 0; i <= data.length -1; i++){
+                    name.push(data[i].name)
+                    total.push(data[i].total)
+                    color.push(randomColor())
+                }
+
+                setPieChart(name, total, color)                  
+            }
+        });
+    }
+
+    function fillRankTable(elements){
+        for(i = 0; i <= elements.length -1; i++){
+            var newRow = "<tr><td>" + elements[i].name + "</td><td>" + elements[i].total + "</td></tr>"
+            $("#rankTable tbody").append(newRow);
+        }
+    }
 
     function getInventory(since){
         $.ajax({
@@ -508,6 +611,9 @@
         }
     }
 
+    function randomColor(){
+        return "#" + Math.floor(Math.random()*16777215).toString(16)
+    }
     
     </script>
 
