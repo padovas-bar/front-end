@@ -586,10 +586,10 @@
 
     $(document).ready(function () {
 
-        isSessionActive(getTodayData())
+        isSessionActive(getTodayData)
 
         $(document).on('change', '#days', function() {
-            isSessionActive(getCustomData(this))
+            isSessionActive(getCustomData.bind(null, this))
         });
 
     });
@@ -605,9 +605,9 @@
             dataType: 'json',
             success: function (data) {
                 if(data){
-                    loadData
+                    loadData()
                 } else{
-                    requestAccess()
+                    requestAccess(loadData)
                 }
             },
             error: function(data){
@@ -617,15 +617,15 @@
         });
     }
 
-    function requestAccess(){
+    function requestAccess(loadData){
         var title = 'Acesso restrito'
         var body = "Insira a senha para visualizar o relatório: <input type='password' placeholder='senha...' id='password' class='form-control form-control-sm'>"
-        var footer = "<button class='btn btn-default btnGrey'  onclick='validatePassword()'>Visualizar relatório!</button>"
+        var footer = "<button class='btn btn-default btnGrey'  onclick='validatePassword(" + loadData + ")'>Visualizar relatório!</button>"
 
         addContentOnModal(title, body, footer);
     }
 
-    function validatePassword(){
+    function validatePassword(loadData){
         $.ajax({
             url: 'http://localhost:8080/login/validate/' + $('#password').val(),
             type: 'get',
@@ -635,7 +635,7 @@
             dataType: 'json',
             success: function (data) {
                 if(data){
-                    getTodayData()
+                    loadData()
 
                     closeModal()
                 } else{
