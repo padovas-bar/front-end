@@ -586,22 +586,97 @@
 
     $(document).ready(function () {
 
-        getOutcome(0)
-        getValueSummarized(0)
-        getTotalPerDay(0)
+        isSessionActive(getTodayData())
 
         $(document).on('change', '#days', function() {
-            var day = $(this).val()
-
-            $("#paymentsTable tbody tr").remove(); 
-
-            getOutcome(day)
-            getValueSummarized(day)
-            getTotalPerDay(day)
-
+            isSessionActive(getCustomData(this))
         });
 
     });
+
+    //Session functions starts
+    function isSessionActive(loadData){
+        $.ajax({
+            url: 'http://localhost:8080/login/valid-session/',
+            type: 'get',
+            headers: {
+                "Accept": "application/json"
+            },
+            dataType: 'json',
+            success: function (data) {
+                if(data){
+                    loadData
+                } else{
+                    requestAccess()
+                }
+            },
+            error: function(data){
+                console.log(data)
+                alert("Erro ao validar senha.")
+            }
+        });
+    }
+
+    function requestAccess(){
+        var title = 'Acesso restrito'
+        var body = "Insira a senha para visualizar o relatório: <input type='password' placeholder='senha...' id='password' class='form-control form-control-sm'>"
+        var footer = "<button class='btn btn-default btnGrey'  onclick='validatePassword()'>Visualizar relatório!</button>"
+
+        addContentOnModal(title, body, footer);
+    }
+
+    function validatePassword(){
+        $.ajax({
+            url: 'http://localhost:8080/login/validate/' + $('#password').val(),
+            type: 'get',
+            headers: {
+                "Accept": "application/json"
+            },
+            dataType: 'json',
+            success: function (data) {
+                if(data){
+                    getTodayData()
+
+                    closeModal()
+                } else{
+                    alert('Senha inválida.')
+                }
+            },
+            error: function(data){
+                console.log(data)
+                alert("Erro ao validar senha.")
+            }
+        });
+    }
+    //Session functions ends
+
+    
+    function getTodayData(){
+        getOutcome(0)
+        getValueSummarized(0)
+        getTotalPerDay(0)
+    }
+
+    function getCustomData(day){
+        var day = $(day).val()
+
+        $("#paymentsTable tbody tr").remove(); 
+
+        getOutcome(day)
+        getValueSummarized(day)
+        getTotalPerDay(day)
+    }
+
+    function closeModal(){
+        $('#modal-close').click()
+    }
+
+    function addContentOnModal(title, body, footer){
+        $('#modal-title-order').text(title)
+        $('#modal-body').html(body)
+        $('#modal-footer').html(footer)
+        $('#btnModal').click()
+    }
 
     function setPieChartValues(cash, debitCard, creditCard){
         // Set new default font family and font color to mimic Bootstrap's default styling
