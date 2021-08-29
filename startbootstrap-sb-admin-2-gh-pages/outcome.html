@@ -582,84 +582,33 @@
     <!-- Page level plugins -->
     <script src="vendor/chart.js/Chart.min.js"></script>
 
+    <!-- Session script -->
+    <script src="js/padovas-bar-session.js"></script>
+
+    <!-- Modal script -->
+    <script src="js/padovas-bar-modal.js"></script>
+
     <script>
+    var day = 0;
 
     $(document).ready(function () {
 
         isSessionActive(getTodayData)
 
         $(document).on('change', '#days', function() {
-            isSessionActive(getCustomData.bind(null, this))
+            day = $(this).val()
+            isSessionActive(getCustomData)
         });
 
     });
 
-    //Session functions starts
-    function isSessionActive(loadData){
-        $.ajax({
-            url: 'http://localhost:8080/login/valid-session/',
-            type: 'get',
-            headers: {
-                "Accept": "application/json"
-            },
-            dataType: 'json',
-            success: function (data) {
-                if(data){
-                    loadData()
-                } else{
-                    requestAccess(loadData)
-                }
-            },
-            error: function(data){
-                console.log(data)
-                alert("Erro ao validar senha.")
-            }
-        });
-    }
-
-    function requestAccess(loadData){
-        var title = 'Acesso restrito'
-        var body = "Insira a senha para visualizar o relatório: <input type='password' placeholder='senha...' id='password' class='form-control form-control-sm'>"
-        var footer = "<button class='btn btn-default btnGrey'  onclick='validatePassword(" + loadData + ")'>Visualizar relatório!</button>"
-
-        addContentOnModal(title, body, footer);
-    }
-
-    function validatePassword(loadData){
-        $.ajax({
-            url: 'http://localhost:8080/login/validate/' + $('#password').val(),
-            type: 'get',
-            headers: {
-                "Accept": "application/json"
-            },
-            dataType: 'json',
-            success: function (data) {
-                if(data){
-                    loadData()
-
-                    closeModal()
-                } else{
-                    alert('Senha inválida.')
-                }
-            },
-            error: function(data){
-                console.log(data)
-                alert("Erro ao validar senha.")
-            }
-        });
-    }
-    //Session functions ends
-
-    
     function getTodayData(){
         getOutcome(0)
         getValueSummarized(0)
         getTotalPerDay(0)
     }
 
-    function getCustomData(day){
-        var day = $(day).val()
-
+    function getCustomData(){
         $("#paymentsTable tbody tr").remove(); 
 
         getOutcome(day)
@@ -667,16 +616,6 @@
         getTotalPerDay(day)
     }
 
-    function closeModal(){
-        $('#modal-close').click()
-    }
-
-    function addContentOnModal(title, body, footer){
-        $('#modal-title-order').text(title)
-        $('#modal-body').html(body)
-        $('#modal-footer').html(footer)
-        $('#btnModal').click()
-    }
 
     function setPieChartValues(cash, debitCard, creditCard){
         // Set new default font family and font color to mimic Bootstrap's default styling

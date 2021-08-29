@@ -517,24 +517,38 @@
     <!-- Page level plugins -->
     <script src="vendor/chart.js/Chart.min.js"></script>
 
+    <!-- Session script -->
+    <script src="js/padovas-bar-session.js"></script>
+
+    <!-- Session script -->
+    <script src="js/padovas-bar-modal.js"></script>
+
     <script>
+    var day = 0;
 
     $(document).ready(function () {
 
-        getInventory(0)
-        getRank(0)
-        
+        isSessionActive(getTodayData)
+    
         $(document).on('change', '#days', function() {
-            var day = $(this).val()
-
-            $("#inventoryTable tbody tr").remove(); 
-            $("#rankTable tbody tr").remove(); 
-
-            getInventory(day)
-            getRank(day)
+            day = $(this).val()
+            isSessionActive(getCustomData)
         });
 
     });
+
+    function getTodayData(){
+        getInventory(0)
+        getRank(0)    
+    }
+
+    function getCustomData(){
+        $("#inventoryTable tbody tr").remove(); 
+        $("#rankTable tbody tr").remove(); 
+
+        getInventory(day)
+        getRank(day)
+    }
 
     function setPieChart(name, total, color){
         console.log(name, total, color)
