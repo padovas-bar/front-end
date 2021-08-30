@@ -1030,6 +1030,14 @@
             async: false,
             success: function (data) {
                 callback = data
+                
+                var containsNull = false;
+                data.orderItems.forEach( e => {
+                    if(e.productId == null){
+                        containsNull = true
+                    }
+                })
+                if(containsNull) alert("Existem produtos nesta comanda sem estarem selecionados. Associe algum produto ou remova o produto antes de fechar a comanda corretamente.")
             }
         });
         return callback
