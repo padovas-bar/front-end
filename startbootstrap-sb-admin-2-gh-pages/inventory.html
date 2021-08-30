@@ -344,7 +344,7 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Resumo de pagamentos</h1>
+                    <h1 class="h3 mb-2 text-gray-800">Controle de estoque</h1>
                     <p class="mb-4">Indicadores de estoque.
 
                     Desde: 
@@ -356,14 +356,13 @@
                     </select></p>
 
 
-                    <p class="mb-4">Top 10 saída de produtos</p>
                     <div class="row">
 
                     <!-- DataTales Example -->
                     <div class="col-xl-4 col-lg-5">
                         <div class="card shadow mb-4">
                             <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-primary">Produtos vendidos</h6>
+                                <h6 class="m-0 font-weight-bold text-primary">Produtos vendidos (TOP 10)</h6>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -383,19 +382,19 @@
                     </div>
 
                     <!-- Pie Chart -->
-                    <div class="col-xl-4 col-lg-5">
+                    <div class="col-xl-8 col-lg-7">
                         <div class="card shadow mb-4">
                             <!-- Card Header - Dropdown -->
                             <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-primary">Quantidade de produtos vendidos</h6>
+                                <h6 class="m-0 font-weight-bold text-primary">Produtos vendidos (TOP 10)</h6>
                             </div>
                             <!-- Card Body -->
                             <div class="card-body">
-                                <div class="chart-pie pt-4">
-                                    <canvas id="pie-chart" width="800" height="400"></canvas>
+                                <div>
+                                    <canvas id="pie-chart" style="height: 500px;"></canvas>
                                 </div>
                                 <hr>
-                                Resumo de quantidade de produtos.
+                                Passe o mouse para detalhes.
                             </div>
                         </div>                    
                     </div>
@@ -403,7 +402,6 @@
                 </div>
                     
 
-                    <p class="mb-4">Relatório de estoque.</p>
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
@@ -563,10 +561,12 @@
             }]
             },
             options: {
-            title: {
-                display: true,
-                text: 'Predicted world population (millions) in 2050'
-            }
+                responsive: true, //this attr make the graph expand its sie
+                maintainAspectRatio: false, //this one is needed too
+                title: {
+                    display: true,
+                    text: 'Proporção de vendas por produto'
+                }
             }
         });
     }

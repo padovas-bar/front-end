@@ -439,8 +439,8 @@
                         </div>
                         <!-- Card Body -->
                         <div class="card-body">
-                            <div class="chart-pie pt-4">
-                                <canvas id="myPieChart"></canvas>
+                            <div>
+                                <canvas id="myPieChart" style="height: 278px;"></canvas>
                             </div>
                             <hr>
                             Passe o mouse para detalhes.
@@ -457,7 +457,7 @@
                             </div>
                             <!-- Card Body -->
                             <div class="card-body">
-                                <div id="chart-bar" class="chart-pie pt-4">
+                                <div style="height: 278px;">
                                     <canvas id="bar-chart"></canvas>
                                 </div>
                                 <hr>
@@ -650,6 +650,10 @@
             display: false
             },
             cutoutPercentage: 80,
+            title: {
+                    display: true,
+                    text: 'Proporção de vendas por tipo de pagamento'
+            }
         },
         });
     }
@@ -677,7 +681,7 @@
                 legend: { display: false },
                 title: {
                     display: true,
-                    text: 'Total por dia'
+                    text: 'Proporção de vendas por dia'
                 },
                 scales: {
                     yAxes: [
