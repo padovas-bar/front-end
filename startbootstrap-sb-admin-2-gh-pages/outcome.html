@@ -100,7 +100,7 @@
                 <li class="nav-item active">
                     <a class="nav-link" href="outcome.html">
                         <i class="fas fa-fw fa-chart-area"></i>
-                        <span>Resumo de saídas</span></a>
+                        <span>Resumo de pagamentos</span></a>
                 </li>
 
                 <li class="nav-item">
@@ -443,7 +443,7 @@
                                 <canvas id="myPieChart"></canvas>
                             </div>
                             <hr>
-                            Resumo de valores por tipo de pagamento.
+                            Passe o mouse para detalhes.
                         </div>
                     </div>                    
                 </div>
@@ -458,17 +458,16 @@
                             <!-- Card Body -->
                             <div class="card-body">
                                 <div id="chart-bar" class="chart-pie pt-4">
-                                    <canvas id="bar-chart" width="300" height="70"></canvas>
+                                    <canvas id="bar-chart"></canvas>
                                 </div>
                                 <hr>
-                                Resumo de pagamento por dia.
+                                Passe o mouse para detalhes.
                             </div>
                         </div>
                     </div>
 
                 </div>
 
-                    <p class="mb-4">Relatório de pagamentos.</p>
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
@@ -659,7 +658,8 @@
 
         $("#chart-bar").html('<canvas id="bar-chart" width="300" height="70"></canvas>')
 
-        new Chart(document.getElementById("bar-chart"), {
+        var ctx = document.getElementById("bar-chart")
+        new Chart(ctx, {
             type: 'bar',
             data: {
             labels: day,
@@ -672,6 +672,8 @@
             ]
             },
             options: {
+                responsive: true, //this attr make the graph expand its sie
+                maintainAspectRatio: false, //this one is needed too
                 legend: { display: false },
                 title: {
                     display: true,
